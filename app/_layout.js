@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
@@ -9,10 +9,20 @@ import ScanScreen from './screens/ScanScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ScanResultScreen from './screens/ScanResultScreen';
+import MeProfileScreen from './screens/MeProfileScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LoginRegisterScreen from './screens/LoginRegisterScreen';
+import { DefaultTheme } from '@react-navigation/native';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
+
+const TasTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFC107',
+  }
+}
 
 export default function App() {
   return (
@@ -22,6 +32,7 @@ export default function App() {
           initialRouteName="LoginRegister"
           screenOptions={{
             headerShown: false,
+            animation: 'none',
           }}
         >
           <Stack.Screen name="Home" component={HomeScreen} />
@@ -30,6 +41,7 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="ScanResult" component={ScanResultScreen} />
+          <Stack.Screen name="MeProfile" component={MeProfileScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
         </Stack.Navigator>
     </SafeAreaProvider>

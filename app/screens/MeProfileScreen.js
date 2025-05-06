@@ -4,20 +4,21 @@ import { FontAwesome } from '@expo/vector-icons';
 import BottomNav from '../components/bottomNav';
 import Text from '../components/text';
 import Header from '../components/header';
+import SignatureDescription from '../components/signatureDescription';
 
-const ProfileScreen = ({ navigation }) => {
+const MeProfileScreen = ({ navigation }) => {
   let iconSize = 40;
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <Header navigation={navigation}></Header>
+      <Header navigation={navigation} isProfile={true}></Header>
 
       <ScrollView style={styles.content}>
         {/* Profile Info */}
         <View style={styles.profileInfo}>
           <Image 
-            source={{ uri: 'https://picsum.photos/200/200?random=30' }} 
+            source={{ uri: 'https://picsum.photos/200/200?random=31' }} 
             style={styles.profileImage} 
           />
           <View style={styles.userInfo}>
@@ -45,17 +46,12 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.linkText}>Additional Links:</Text>
         <Text style={styles.websiteLink}>creator.website.com</Text>
 
-        {/* Content Grid */}
-        <View style={styles.contentGrid}>
-          <Image 
-            source={{ uri: 'https://picsum.photos/400/400?random=31' }} 
-            style={styles.contentImage} 
-          />
-          <Image 
-            source={{ uri: 'https://picsum.photos/400/400?random=32' }} 
-            style={styles.contentImage} 
-          />
-          {/* Add more images here */}
+        {/* Signature List */}
+        <View style={styles.signatureList}>
+          { dummySignatures.map((signature) => {
+            return <SignatureDescription description={signature} />;
+          })}
+          {/* Add more signatures here */}
         </View>
       </ScrollView>
 
@@ -64,6 +60,44 @@ const ProfileScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
+const dummySignatures = [
+  {
+    key: 1,
+    nickName: 'Just A Signature',
+    date: 'Feb. 10',
+    time: '8:30 AM',
+    location: 'Los Angeles',
+  },
+  {
+    key: 2,
+    nickName: 'Just A Signature',
+    date: 'Feb. 10',
+    time: '8:30 AM',
+    location: 'Los Angeles',
+  },
+  {
+    key: 3,
+    nickName: 'Just A Signature',
+    date: 'Feb. 10',
+    time: '8:30 AM',
+    location: 'Los Angeles',
+  },
+  {
+    key: 4,
+    nickName: 'Just A Signature',
+    date: 'Feb. 10',
+    time: '8:30 AM',
+    location: 'Los Angeles',
+  },
+  {
+    key: 5,
+    nickName: 'Just A Signature',
+    date: 'Feb. 10',
+    time: '8:30 AM',
+    location: 'Los Angeles',
+  },
+]
 
 const styles = StyleSheet.create({
   container: {
@@ -113,17 +147,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 24,
   },
-  contentGrid: {
+  signatureList: {
     flexWrap: 'wrap',
-    alignContent: 'center',
+    alignContent: 'flex-start',
     justifyContent: 'space-between',
-  },
-  contentImage: {
-    width: '60%',
-    aspectRatio: 1,
-    marginBottom: 10,
-    borderRadius: 5,
   },
 });
 
-export default ProfileScreen;
+export default MeProfileScreen;

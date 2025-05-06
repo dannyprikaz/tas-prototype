@@ -9,11 +9,26 @@ const Header = ({ navigation, isProfile }) => {
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
                 <Text style={styles.headerTitle}>TAS</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => isProfile ? navigation.goBack() : navigation.navigate('Profile')}>
-                <View style={styles.profileIcon}>
-                <Ionicons name="person" size={40} color="black" />
-                </View>
-            </TouchableOpacity>
+            {(() => {
+                if (isProfile) {
+                    return (
+                        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                            <View style={styles.settingsIcon}>
+                            <Ionicons name="menu" size={40} color="black" />
+                            </View>
+                        </TouchableOpacity>
+                    );
+                } else {
+                    return (
+                        <TouchableOpacity onPress={() => navigation.navigate('MeProfile')}>
+                            <View style={styles.profileIcon}>
+                            <Ionicons name="person" size={40} color="black" />
+                            </View>
+                        </TouchableOpacity>
+                    );
+                }
+
+            })()}
         </View>
     );
 };
@@ -24,12 +39,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingVertical: 10,
     },
     headerTitle: {
         fontSize: 66,
-        fontWeight: 'bold',
         color: '#000',
     },
     profileIcon: {
@@ -37,6 +50,12 @@ const styles = StyleSheet.create({
       height: 60,
       borderRadius: 30,
       backgroundColor: 'rgba(0,0,0,0.1)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    settingsIcon: {
+      width: 60,
+      height: 60,
       justifyContent: 'center',
       alignItems: 'center',
     },
