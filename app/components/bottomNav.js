@@ -14,6 +14,7 @@ const BottomNav = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity 
                 style={styles.navButton}
+                onPress={() => navigation.navigate('Create')}
             >
                 <MaterialIcons name="add-box" size={iconSize} color="black" />
             </TouchableOpacity>

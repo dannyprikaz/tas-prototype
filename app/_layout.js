@@ -13,6 +13,7 @@ import MeProfileScreen from './screens/MeProfileScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LoginRegisterScreen from './screens/LoginRegisterScreen';
 import { DefaultTheme } from '@react-navigation/native';
+import CreateScreen from './screens/CreateScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,7 @@ export default function App() {
           <Stack.Screen name="ScanResult" component={ScanResultScreen} />
           <Stack.Screen name="MeProfile" component={MeProfileScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Create" component={CreateScreen}  />
         </Stack.Navigator>
     </SafeAreaProvider>
   );
