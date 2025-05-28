@@ -23,7 +23,6 @@ import uuid from 'react-native-uuid';
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { FFmpegKit } from "ffmpeg-kit-react-native";
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -61,16 +60,8 @@ const CreateScreen = ({ navigation }) => {
   };
 
   const processVideo = async (video) => {
-    const outputUri = `${FileSystem.cacheDirectory}${uuid.v4()}.mov`
-    FFmpegKit.execute(`-i ${video.uri} -vf "split [main][tmp]; [tmp] crop=iw:ih/2:0:0, vflip [flip]; [main][flip] overlay=0:H/2" ${outputUri}`).then(session => {
-        const returnCode = session.getReturnCode();
-        if (returnCode.isSuccess()) {
-            console.log('FFmpeg process completed successfully');
-        } else {
-            console.log(`FFmpeg process failed with code ${returnCode}`);
-        }
-        return {uri: outputUri};
-    });
+    const outputUri = `${FileSystem.cacheDirectory}${uuid.v4()}.mov`;
+    return outputUri;    
   }
 
   const saveVideo = async (video) => {
