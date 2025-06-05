@@ -23,6 +23,7 @@ import uuid from 'react-native-uuid';
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+// import NativeApplySignature from '../../specs/NativeApplySignature';
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -56,6 +57,8 @@ const CreateScreen = ({ navigation }) => {
     setRecording(true);
     const video = await ref.current?.recordAsync();
     console.log( video.uri );
+    // 
+    // let processedVideo = {uri: NativeApplySignature(video.uri, 'signature')};
     saveVideo(video);
   };
 
