@@ -23,6 +23,7 @@ import uuid from 'react-native-uuid';
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import AddSignature from '../../modules/add-signature';
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -55,8 +56,13 @@ const CreateScreen = ({ navigation }) => {
     }
     setRecording(true);
     const video = await ref.current?.recordAsync();
-    console.log( video.uri );
-    saveVideo(video);
+    try {
+      const modifiedVideoUri = await AddSignature.addTextOverlayToVideo(video.uri, 'STANDIN SIGNATURE 2');
+      console.log('Modified URI: ' + modifiedVideoUri);
+      saveVideo({uri: modifiedVideoUri});
+    } catch (err) {
+      console.error('Failed to add text overlay:', err);
+    }
   };
 
   const saveVideo = async (video) => {
