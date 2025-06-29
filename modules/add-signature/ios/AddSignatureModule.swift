@@ -1,6 +1,7 @@
 import ExpoModulesCore
 import UIKit
 import AVFoundation
+import CoreImage.CIFilterBuiltins
 
 public class AddSignatureModule: Module {
   // Each module class must implement the definition function. The definition consists of components
@@ -17,7 +18,7 @@ public class AddSignatureModule: Module {
             
             // Defines a JavaScript function that always returns a Promise and whose native code
             // is by default dispatched on the different thread than the JavaScript runtime runs on.
-            AsyncFunction("addTextOverlayToVideo") { (videoUrl: String, text: String) -> String in
+            AsyncFunction("addQROverlayToVideo") { (videoUrl: String, text: String) -> String in
                 
                 func transformedVideoSize(for track: AVAssetTrack) -> CGSize {
                     let t = track.preferredTransform
@@ -74,15 +75,34 @@ public class AddSignatureModule: Module {
                     videoLayer.frame = CGRect(origin: .zero, size: videoSize)
                     parentLayer.addSublayer(videoLayer)
                     
-                    // Create text overlay
-                    let titleLayer = CATextLayer()
-                    titleLayer.string = text
-                    titleLayer.font = UIFont.systemFont(ofSize: 36)
-                    titleLayer.alignmentMode = .center
-                    titleLayer.foregroundColor = UIColor.white.cgColor
-                    titleLayer.frame = CGRect(x: 0, y: videoSize.height / 2, width: videoSize.width, height: 100)
-                    titleLayer.isWrapped = true
-                    parentLayer.addSublayer(titleLayer)
+                    // Generate QR code image
+                    let data = text.data(using: .utf8)!
+                    let filter = CIFilter.qrCodeGenerator()
+                    filter.setValue(data, forKey: "inputMessage")
+
+                    guard let outputImage = filter.outputImage else {
+                      throw NSError(domain: "AddSignature", code: 3, userInfo: [NSLocalizedDescriptionKey: "Failed to generate QR code"])
+                    }
+
+                    // Scale the QR code so it's readable
+                    let scaleX = videoSize.width / outputImage.extent.size.width * 0.25
+                    let scaleY = videoSize.width / outputImage.extent.size.height * 0.25
+                    let transformedImage = outputImage.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+
+                    // Convert CIImage to CGImage
+                    let context = CIContext()
+                    guard let cgImage = context.createCGImage(transformedImage, from: transformedImage.extent) else {
+                        throw NSError(domain: "AddSignature", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to render QR code"])
+                    }
+
+                    // Create a CALayer for QR code
+                    let qrLayer = CALayer()
+                    qrLayer.contents = cgImage
+                    qrLayer.frame = CGRect(x: 20, y: 20, width: transformedImage.extent.width, height: transformedImage.extent.height)
+                    qrLayer.contentsGravity = .resizeAspectFill
+
+                    // Add to parent layer
+                    parentLayer.addSublayer(qrLayer)
                     
                     videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(
                         postProcessingAsVideoLayer: videoLayer,

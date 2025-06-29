@@ -24,6 +24,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AddSignature from '../../modules/add-signature';
+import { createHash } from 'react-native-quick-crypto';
+import elliptic from 'elliptic';
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -32,6 +34,12 @@ const CreateScreen = ({ navigation }) => {
   const [mode, setMode] = useState("video");
   const [facing, setFacing] = useState("back");
   const [recording, setRecording] = useState(false);
+  const privateKeyHex = '35d7680c6f6c24a71ab692e7dd2e3f698eb4843ae27ef91acbdb55c1fc1b5836';
+
+  const EC = elliptic.ec;
+  const ec = new EC('p256');
+  const key = ec.keyFromPrivate(privateKeyHex, 'hex');
+
 
   if (!permission) {
     return null;
@@ -48,6 +56,11 @@ const CreateScreen = ({ navigation }) => {
     );
   }
 
+  const signWithEcdsa = (message, privateKey) => {
+    const hash = createHash('sha256').update(message).digest();
+    return privateKey.sign(hash).toDER('hex');
+  }
+
   const recordVideo = async () => {
     if (recording) {
       setRecording(false);
@@ -55,9 +68,12 @@ const CreateScreen = ({ navigation }) => {
       return;
     }
     setRecording(true);
+    const startTime = Math.floor(Date.now() / 1000);
+    const timeMsg = new TextEncoder().encode(startTime.toString());
+    const timeSignature = signWithEcdsa(timeMsg, key);
     const video = await ref.current?.recordAsync();
     try {
-      const modifiedVideoUri = await AddSignature.addTextOverlayToVideo(video.uri, 'STANDIN SIGNATURE 2');
+      const modifiedVideoUri = await AddSignature.addQROverlayToVideo(video.uri, `Time: ${startTime.toString()}\nTime Signed: ${timeSignature}`);
       console.log('Modified URI: ' + modifiedVideoUri);
       saveVideo({uri: modifiedVideoUri});
     } catch (err) {
