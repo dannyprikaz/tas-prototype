@@ -9,24 +9,24 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		57C80C1F6A72004DC74AA436 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE9E71BE9F421D116A4CB7B /* ExpoModulesProvider.swift */; };
-		AA98024F3ED5D573766986EA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7DEA8E79243A1D4A2AB885E6 /* PrivacyInfo.xcprivacy */; };
+		7752C3E1200AC3E8C26CCF69 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600F80FFD442A4522BD5284 /* ExpoModulesProvider.swift */; };
+		99B767CA5866DF6C7892A46D /* libPods-tasprototype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A494D83AF239D158462B46 /* libPods-tasprototype.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C94048D3BD2A32CF1BD575C0 /* libPods-tasprototype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2B104D7A20596B45DA92172 /* libPods-tasprototype.a */; };
+		C8072235B67BF5C1ABBFC44A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 035372C1EE04823B8F13CF6E /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		035372C1EE04823B8F13CF6E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = tasprototype/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* tasprototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tasprototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = tasprototype/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = tasprototype/Info.plist; sourceTree = "<group>"; };
-		1B178605AB1F7B33CC186111 /* Pods-tasprototype.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.debug.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.debug.xcconfig"; sourceTree = "<group>"; };
-		7DEA8E79243A1D4A2AB885E6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = tasprototype/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		73A494D83AF239D158462B46 /* libPods-tasprototype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-tasprototype.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9614FAD1C86F47E1BD07B692 /* Pods-tasprototype.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.release.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = tasprototype/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B91D61580C6FA55501B18FA1 /* Pods-tasprototype.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.release.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.release.xcconfig"; sourceTree = "<group>"; };
-		BAE9E71BE9F421D116A4CB7B /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-tasprototype/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		B80AF74C8007DF651CD5121C /* Pods-tasprototype.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.debug.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		E2B104D7A20596B45DA92172 /* libPods-tasprototype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-tasprototype.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C600F80FFD442A4522BD5284 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-tasprototype/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = tasprototype/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* tasprototype-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "tasprototype-Bridging-Header.h"; path = "tasprototype/tasprototype-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C94048D3BD2A32CF1BD575C0 /* libPods-tasprototype.a in Frameworks */,
+				99B767CA5866DF6C7892A46D /* libPods-tasprototype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				7DEA8E79243A1D4A2AB885E6 /* PrivacyInfo.xcprivacy */,
+				035372C1EE04823B8F13CF6E /* PrivacyInfo.xcprivacy */,
 			);
 			name = tasprototype;
 			sourceTree = "<group>";
@@ -62,9 +62,27 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				E2B104D7A20596B45DA92172 /* libPods-tasprototype.a */,
+				73A494D83AF239D158462B46 /* libPods-tasprototype.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5B9A289F4E37ECEEC904D23D /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				E2370939DAA673917A9D643C /* tasprototype */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		7BEE55C40118DB247C3BE118 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B80AF74C8007DF651CD5121C /* Pods-tasprototype.debug.xcconfig */,
+				9614FAD1C86F47E1BD07B692 /* Pods-tasprototype.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -81,8 +99,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				ED3C2D6DC990E734B98EFA0A /* Pods */,
-				E9DD653C9D0CA929734C5992 /* ExpoModulesProviders */,
+				7BEE55C40118DB247C3BE118 /* Pods */,
+				5B9A289F4E37ECEEC904D23D /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -106,27 +124,10 @@
 			path = tasprototype/Supporting;
 			sourceTree = "<group>";
 		};
-		E9DD653C9D0CA929734C5992 /* ExpoModulesProviders */ = {
+		E2370939DAA673917A9D643C /* tasprototype */ = {
 			isa = PBXGroup;
 			children = (
-				FBA5171DC11D4F07DCF3B6CC /* tasprototype */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		ED3C2D6DC990E734B98EFA0A /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				1B178605AB1F7B33CC186111 /* Pods-tasprototype.debug.xcconfig */,
-				B91D61580C6FA55501B18FA1 /* Pods-tasprototype.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		FBA5171DC11D4F07DCF3B6CC /* tasprototype */ = {
-			isa = PBXGroup;
-			children = (
-				BAE9E71BE9F421D116A4CB7B /* ExpoModulesProvider.swift */,
+				C600F80FFD442A4522BD5284 /* ExpoModulesProvider.swift */,
 			);
 			name = tasprototype;
 			sourceTree = "<group>";
@@ -139,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "tasprototype" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				7CBA9AD5094656559F0BE06E /* [Expo] Configure project */,
+				5716E712FF67B306C7E5F118 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				56F621D87BC708E28A6AFA27 /* [CP] Embed Pods Frameworks */,
+				7A07D0A48CCFE506D243421A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -165,8 +166,8 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = BUP8ZP8X4V;
 						LastSwiftMigration = 1250;
+						DevelopmentTeam = "BUP8ZP8X4V";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -180,9 +181,6 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
-			packageReferences = (
-				D8D8FE322E14947B00D0D708 /* XCRemoteSwiftPackageReference "secp256k1.swift" */,
-			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -200,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				AA98024F3ED5D573766986EA /* PrivacyInfo.xcprivacy in Resources */,
+				C8072235B67BF5C1ABBFC44A /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,7 +242,26 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		56F621D87BC708E28A6AFA27 /* [CP] Embed Pods Frameworks */ = {
+		5716E712FF67B306C7E5F118 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-tasprototype/expo-configure-project.sh\"\n";
+		};
+		7A07D0A48CCFE506D243421A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -263,25 +280,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-tasprototype/Pods-tasprototype-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		7CBA9AD5094656559F0BE06E /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-tasprototype/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -331,7 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				57C80C1F6A72004DC74AA436 /* ExpoModulesProvider.swift in Sources */,
+				7752C3E1200AC3E8C26CCF69 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,15 +338,12 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B178605AB1F7B33CC186111 /* Pods-tasprototype.debug.xcconfig */;
+			baseConfigurationReference = B80AF74C8007DF651CD5121C /* Pods-tasprototype.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = tasprototype/tasprototype.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BUP8ZP8X4V;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -374,20 +369,20 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				DEVELOPMENT_TEAM = "BUP8ZP8X4V";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B91D61580C6FA55501B18FA1 /* Pods-tasprototype.release.xcconfig */;
+			baseConfigurationReference = 9614FAD1C86F47E1BD07B692 /* Pods-tasprototype.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = tasprototype/tasprototype.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = BUP8ZP8X4V;
 				INFOPLIST_FILE = tasprototype/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -407,6 +402,9 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				DEVELOPMENT_TEAM = "BUP8ZP8X4V";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 			};
 			name = Release;
 		};
@@ -465,7 +463,10 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -520,7 +521,10 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -550,17 +554,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		D8D8FE322E14947B00D0D708 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/GigaBitcoin/secp256k1.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.21.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }

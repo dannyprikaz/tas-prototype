@@ -35,6 +35,8 @@ const CreateScreen = ({ navigation }) => {
   const [facing, setFacing] = useState("back");
   const [recording, setRecording] = useState(false);
   const privateKeyHex = '35d7680c6f6c24a71ab692e7dd2e3f698eb4843ae27ef91acbdb55c1fc1b5836';
+  const devUserID = 'd38668c0-9de1-4989-bd59-95b03d89d453';
+  const devCertID = 'cd41773f-c9fa-5bfd-8e0a-66b472b679fb';
 
   const EC = elliptic.ec;
   const ec = new EC('p256');
@@ -56,11 +58,6 @@ const CreateScreen = ({ navigation }) => {
     );
   }
 
-  const signWithEcdsa = (message, privateKey) => {
-    const hash = createHash('sha256').update(message).digest();
-    return privateKey.sign(hash).toDER('hex');
-  }
-
   const recordVideo = async () => {
     if (recording) {
       setRecording(false);
@@ -69,11 +66,9 @@ const CreateScreen = ({ navigation }) => {
     }
     setRecording(true);
     const startTime = Math.floor(Date.now() / 1000);
-    const timeMsg = new TextEncoder().encode(startTime.toString());
-    const timeSignature = signWithEcdsa(timeMsg, key);
     const video = await ref.current?.recordAsync();
     try {
-      const modifiedVideoUri = await AddSignature.addQROverlayToVideo(video.uri, `Time: ${startTime.toString()}\nTime Signed: ${timeSignature}`);
+      const modifiedVideoUri = await AddSignature.addQROverlayToVideo(video.uri, startTime, privateKeyHex, devCertID);
       console.log('Modified URI: ' + modifiedVideoUri);
       saveVideo({uri: modifiedVideoUri});
     } catch (err) {
