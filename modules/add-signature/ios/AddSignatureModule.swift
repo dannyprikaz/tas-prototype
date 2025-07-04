@@ -30,6 +30,37 @@ extension Data {
   }
 }
 
+let base45Charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:")
+
+func base45Encode(_ data: Data) -> String {
+  var output = ""
+
+  var i = 0
+  let count = data.count
+  while i < count {
+    if i + 1 < count {
+      let x = Int(data[i]) << 8 | Int(data[i + 1])
+      let e = x / (45 * 45)
+      let d = (x / 45) % 45
+      let c = x % 45
+      output.append(base45Charset[e])
+      output.append(base45Charset[d])
+      output.append(base45Charset[c])
+      i += 2
+    } else {
+      let x = Int(data[i])
+      let d = x / 45
+      let c = x % 45
+      output.append(base45Charset[d])
+      output.append(base45Charset[c])
+      i += 1
+    }
+  }
+
+  return output
+}
+
+
 public class AddSignatureModule: Module {
   public func definition() -> ModuleDefinition {
     Name("AddSignature")
@@ -108,7 +139,7 @@ public class AddSignatureModule: Module {
         var leftQRLayers: [CALayer] = []
         var rightQRLayers: [CALayer] = []
 
-        let qrSizeMultiplier: CGFloat = 0.25 // 25% of video width
+        let qrSizeMultiplier: CGFloat = 0.10 // 10% of video width
         let qrWidth = videoSize.width * qrSizeMultiplier
         let qrHeight = qrWidth
 
@@ -116,10 +147,10 @@ public class AddSignatureModule: Module {
           let currentTime = startTime + i * intervalSeconds
 
           // --- Left QR (TAS-time) ---
-          let leftSignature = try privateKey.signature(
-            for: String(currentTime).data(using: .utf8)!
-          ).derRepresentation.base64URLEncodedString()
-          let leftMessage = "TAS-time:\(currentTime)::\(leftSignature)"
+            let message = String(currentTime)
+            let sig = try privateKey.signature(for: message.data(using: .utf8)!).rawRepresentation
+            let encodedSig = base45Encode(sig)
+            let leftMessage = "T:\(currentTime):\(encodedSig)"
             
 
           guard let leftData = leftMessage.data(using: .utf8) else {
@@ -134,14 +165,17 @@ public class AddSignatureModule: Module {
             throw NSError(domain: "AddSignature", code: 3, userInfo: [NSLocalizedDescriptionKey: "Failed to generate left QR code"])
           }
 
-          let leftTransformed = leftOutputImage.transformed(by: CGAffineTransform(scaleX: qrWidth / leftOutputImage.extent.size.width, y: qrHeight / leftOutputImage.extent.size.height))
+            let scaleFactor: CGFloat = 10
+            let leftTransformed = leftOutputImage.transformed(by: CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
 
           guard let leftCGImage = context.createCGImage(leftTransformed, from: leftTransformed.extent) else {
             throw NSError(domain: "AddSignature", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to render left QR code"])
           }
 
           let leftLayer = CALayer()
-          leftLayer.contents = leftCGImage
+            leftLayer.contents = leftCGImage
+            leftLayer.magnificationFilter = .nearest
+            leftLayer.minificationFilter = .nearest
           leftLayer.frame = CGRect(x: 20, y: 20, width: qrWidth, height: qrHeight)
           leftLayer.contentsGravity = .resizeAspectFill
           leftLayer.opacity = 0
@@ -149,9 +183,10 @@ public class AddSignatureModule: Module {
           leftQRLayers.append(leftLayer)
 
           // --- Right QR (TAS-cert) ---
-          let certMessageData = "\(certID)\(currentTime)".data(using: .utf8)!
-          let certSignature = try privateKey.signature(for: certMessageData).derRepresentation.base64URLEncodedString()
-          let rightMessage = "TAS-cert:\(certID)::\(certSignature)"
+            let certMessage = "\(certID)\(currentTime)".data(using: .utf8)!
+            let certSig = try privateKey.signature(for: certMessage).rawRepresentation
+            let encodedCertSig = base45Encode(certSig)
+            let rightMessage = "U:\(certID.uppercased()):\(encodedCertSig)"
 
           guard let rightData = rightMessage.data(using: .utf8) else {
             throw NSError(domain: "AddSignature", code: 7, userInfo: [NSLocalizedDescriptionKey: "Invalid right QR message data"])
@@ -165,7 +200,8 @@ public class AddSignatureModule: Module {
             throw NSError(domain: "AddSignature", code: 8, userInfo: [NSLocalizedDescriptionKey: "Failed to generate right QR code"])
           }
 
-          let rightTransformed = rightOutputImage.transformed(by: CGAffineTransform(scaleX: qrWidth / rightOutputImage.extent.size.width, y: qrHeight / rightOutputImage.extent.size.height))
+            
+        let rightTransformed = rightOutputImage.transformed(by: CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
 
           guard let rightCGImage = context.createCGImage(rightTransformed, from: rightTransformed.extent) else {
             throw NSError(domain: "AddSignature", code: 9, userInfo: [NSLocalizedDescriptionKey: "Failed to render right QR code"])
@@ -173,6 +209,8 @@ public class AddSignatureModule: Module {
 
           let rightLayer = CALayer()
           rightLayer.contents = rightCGImage
+            rightLayer.magnificationFilter = .nearest
+            rightLayer.minificationFilter = .nearest
           rightLayer.frame = CGRect(x: 40 + qrWidth, y: 20, width: qrWidth, height: qrHeight) // positioned right to left QR with 20pt gap
           rightLayer.contentsGravity = .resizeAspectFill
           rightLayer.opacity = 0
