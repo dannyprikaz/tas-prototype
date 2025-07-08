@@ -4,6 +4,15 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
 import Text from '../components/text';
+import { EventEmitter } from 'expo-modules-core';
+import ScreenQRModule from '../../modules/screen-qr-module';
+
+const emitter = new EventEmitter(ScreenQRModule);
+
+emitter.addListener('onQRCodeDetected', ({ value }) => {
+
+  console.log('✅ QR Code Detected:', value);
+});
 
 const ScanScreen = ({ navigation }) => {
   const [facing, setFacing] = useState('back');
@@ -46,7 +55,14 @@ const ScanScreen = ({ navigation }) => {
           </Svg>
         </View>
         <View style={styles.overlay}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            try {
+              console.log("Starting Broadcast")
+              ScreenQRModule.startBroadcast();
+            } catch (e) {
+              console.error('🚨 Failed to start screen broadcast:', e);
+            }
+          }}>
             <MaterialIcons name="smartphone" size={48} color="#D6C6FF" />
           </TouchableOpacity>
         </View>

@@ -36,7 +36,8 @@
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./modules/screen-qr-module/plugin"
     ],
     "experiments": {
       "typedRoutes": true
