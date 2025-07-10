@@ -3,35 +3,85 @@ import Vision
 import CoreImage
 
 class SampleHandler: RPBroadcastSampleHandler {
+  lazy var qrRequest: VNDetectBarcodesRequest = {
+    let request = VNDetectBarcodesRequest { request, error in
+      self.handleBarcodes(request.results, error: error)
+    }
+    request.symbologies = [.qr]
+    return request
+  }()
+  var lastAnalysisTime = CFAbsoluteTimeGetCurrent()
+  let analysisInterval: CFTimeInterval = 0.2  // Analyze 5 frames per second
 
-  let ciContext = CIContext()
-  let qrRequest = VNDetectBarcodesRequest()
-  var lastDetected: String?
+  var foundMessages = Set<String>()
 
   override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
-    guard sampleBufferType == .video,
-          let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+    guard sampleBufferType == .video else { return }
+    
+    let now = CFAbsoluteTimeGetCurrent()
+    if now - lastAnalysisTime >= analysisInterval {
+      lastAnalysisTime = now
+    } else {
       return
     }
+    
+    processFrameBuffer(sampleBuffer)
+  }
 
-    let requestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
-    do {
-      try requestHandler.perform([qrRequest])
-      if let results = qrRequest.results,
-         let first = results.first,
-         let payload = first.payloadStringValue {
 
-        if payload != lastDetected {
-          lastDetected = payload
-          let defaults = UserDefaults(suiteName: "group.com.dannyprikaz.tasprototype")
-          defaults?.set(payload, forKey: "lastDetectedQR")
-          defaults?.synchronize()
+  func processFrameBuffer(_ sampleBuffer: CMSampleBuffer) {
+    guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-          finishBroadcastWithError(NSError(domain: "QRDetected", code: 0, userInfo: [NSLocalizedDescriptionKey: "QR code found"]))
-        }
-      }
-    } catch {
-      print("QR detection failed: \(error)")
+    let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .up, options: [:])
+    DispatchQueue.global(qos: .userInitiated).async {
+      try? handler.perform([self.qrRequest])
     }
   }
+
+  func handleBarcodes(_ results: [Any]?, error: Error?) {
+    guard let results = results as? [VNBarcodeObservation] else { return }
+
+    var seenPrefixes = Set<String>()
+
+    for qr in results {
+      guard let msg = qr.payloadStringValue else { continue }
+
+      if msg.hasPrefix("T:") {
+        seenPrefixes.insert("T:")
+      } else if msg.hasPrefix("U:") {
+        seenPrefixes.insert("U:")
+      } else if msg.hasPrefix("C:") {
+        seenPrefixes.insert("C:")
+      } else if msg.hasPrefix("L:") {
+        seenPrefixes.insert("L:")
+      }
+
+      // Optionally store all messages (if needed elsewhere)
+      foundMessages.insert(msg)
+    }
+
+    // Stop only if all 4 prefixes have been seen
+    if seenPrefixes.count == 4 {
+      stopBroadcasting()
+    }
+  }
+
+
+
+  func stopBroadcasting() {
+    // Send group notification for TAS app
+    if let ud = UserDefaults(suiteName: "group.com.dannyprikaz.tasprototype") {
+      ud.setValue(Array(foundMessages), forKey: "lastDetectedQRSet")
+    }
+
+    foundMessages.removeAll()
+
+    finishBroadcastWithError(NSError(
+      domain: "QRDetected",
+      code: 0,
+      userInfo: [NSLocalizedDescriptionKey: "All QR codes detected (T, U, C, L)"]
+    ))
+  }
+
+
 }
