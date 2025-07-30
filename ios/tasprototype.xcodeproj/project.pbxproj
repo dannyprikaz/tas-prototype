@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -63,6 +63,7 @@
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = tasprototype/SplashScreen.storyboard; sourceTree = "<group>"; };
 		B7F61115AF0983E47DF75633 /* Pods-tasprototype.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.debug.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		D867CE022E3AA1C500CEA012 /* tasprototype.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tasprototype.entitlements; sourceTree = "<group>"; };
 		D87AB6EA2E1C992C001883C1 /* TASBroadcastExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TASBroadcastExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D87AB6EB2E1C992C001883C1 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		D87AB6F52E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TASBroadcastExtensionSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,14 +75,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D87AB7082E1C992C001883C1 /* Exceptions for "TASBroadcastExtension" folder in "TASBroadcastExtension" target */ = {
+		D87AB7082E1C992C001883C1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = D87AB6E92E1C992C001883C1 /* TASBroadcastExtension */;
 		};
-		D87AB70A2E1C992C001883C1 /* Exceptions for "TASBroadcastExtensionSetupUI" folder in "TASBroadcastExtensionSetupUI" target */ = {
+		D87AB70A2E1C992C001883C1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -91,30 +92,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D87AB6ED2E1C992C001883C1 /* TASBroadcastExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D87AB7082E1C992C001883C1 /* Exceptions for "TASBroadcastExtension" folder in "TASBroadcastExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TASBroadcastExtension;
-			sourceTree = "<group>";
-		};
-		D87AB6F92E1C992C001883C1 /* TASBroadcastExtensionSetupUI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D87AB70A2E1C992C001883C1 /* Exceptions for "TASBroadcastExtensionSetupUI" folder in "TASBroadcastExtensionSetupUI" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TASBroadcastExtensionSetupUI;
-			sourceTree = "<group>";
-		};
+		D87AB6ED2E1C992C001883C1 /* TASBroadcastExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D87AB7082E1C992C001883C1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TASBroadcastExtension; sourceTree = "<group>"; };
+		D87AB6F92E1C992C001883C1 /* TASBroadcastExtensionSetupUI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D87AB70A2E1C992C001883C1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TASBroadcastExtensionSetupUI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +128,7 @@
 		13B07FAE1A68108700A75B9A /* tasprototype */ = {
 			isa = PBXGroup;
 			children = (
+				D867CE022E3AA1C500CEA012 /* tasprototype.entitlements */,
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				F11748442D0722820044C1D9 /* tasprototype-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
@@ -661,10 +641,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -719,10 +696,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -741,6 +715,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtension/TASBroadcastExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -784,6 +759,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtension/TASBroadcastExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;

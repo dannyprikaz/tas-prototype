@@ -2,7 +2,7 @@ import ExpoModulesCore
 import ReplayKit
 
 public class ScreenQRModule: Module {
-  var timer: Timer?
+    var foregroundObserver: NSObjectProtocol?
 
   public func definition() -> ModuleDefinition {
     Name("ScreenQRModule")
@@ -10,39 +10,60 @@ public class ScreenQRModule: Module {
     Events("onQRCodeDetected", "onError")
 
       AsyncFunction("startBroadcast") { () -> String in
-        // Run everything UIKit-related on the main thread:
         DispatchQueue.main.sync {
           let picker = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
           picker.preferredExtension = "com.dannyprikaz.tasprototype.TASBroadcastExtension"
 
           if let button = picker.subviews.first(where: { $0 is UIButton }) as? UIButton {
-            // Trigger the button programmatically:
             button.sendActions(for: .allEvents)
           }
         }
 
-        startPolling()
+        NSLog("Start Broadcast called")
+
+        if let ud = UserDefaults(suiteName: "group.com.dannyprikaz.tasprototype") {
+          ud.set([], forKey: "lastDetectedQRSet")
+          ud.set(true, forKey: "broadcastAttempted")
+        }
+
         return "started"
       }
+      
+      OnCreate {
+        self.foregroundObserver = NotificationCenter.default.addObserver(
+          forName: UIApplication.willEnterForegroundNotification,
+          object: nil,
+          queue: .main
+        ) { [weak self] _ in
+          self?.checkForDetectedQR()
+        }
+      }
 
-
-    Function("stopPolling") {
-      self.timer?.invalidate()
-      self.timer = nil
-    }
+      OnDestroy {
+        if let observer = self.foregroundObserver {
+          NotificationCenter.default.removeObserver(observer)
+        }
+      }
   }
+    
+    private func checkForDetectedQR() {
+      NSLog("App entered foreground, checking for QR data")
 
-  private func startPolling() {
-    timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-      let defaults = UserDefaults(suiteName: "group.com.dannyprikaz.tasprototype")
-      if let detected = defaults?.string(forKey: "lastDetectedQR") {
-        self?.sendEvent("onQRCodeDetected", [
-          "value": detected
-        ])
-        defaults?.removeObject(forKey: "lastDetectedQR")
-        self?.timer?.invalidate()
-        self?.timer = nil
+      if let ud = UserDefaults(suiteName: "group.com.dannyprikaz.tasprototype") {
+        let attempted = ud.bool(forKey: "broadcastAttempted")
+        if attempted,
+           let detected = ud.array(forKey: "lastDetectedQRSet") as? [String],
+           !detected.isEmpty {
+
+          NSLog("✅ Detected QR codes on foreground: \(detected)")
+          self.sendEvent("onQRCodeDetected", ["value": detected])
+
+          ud.removeObject(forKey: "lastDetectedQRSet")
+          ud.removeObject(forKey: "broadcastAttempted")
+        } else {
+          NSLog("⏳ No QR codes or broadcast not attempted")
+        }
       }
     }
-  }
+
 }
