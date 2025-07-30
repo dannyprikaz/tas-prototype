@@ -26,18 +26,27 @@ public class ScreenQRModule: Module {
           ud.set(true, forKey: "broadcastAttempted")
         }
 
-        return "started"
-      }
-      
-      OnCreate {
+        // ✅ Set up observer for foreground event
         self.foregroundObserver = NotificationCenter.default.addObserver(
           forName: UIApplication.willEnterForegroundNotification,
           object: nil,
           queue: .main
         ) { [weak self] _ in
-          self?.checkForDetectedQR()
+          guard let self = self else { return }
+
+          self.checkForDetectedQR()
+
+          // ✅ Remove observer after firing
+          if let observer = self.foregroundObserver {
+            NotificationCenter.default.removeObserver(observer)
+            self.foregroundObserver = nil
+          }
         }
+
+        return "started"
       }
+
+
 
       OnDestroy {
         if let observer = self.foregroundObserver {

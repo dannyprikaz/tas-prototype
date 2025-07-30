@@ -5,7 +5,50 @@ import Text from '../components/text';
 import Header from '../components/header';
 import BottomNav from '../components/bottomNav';
 
-const ScanResultScreen = ({ navigation }) => {
+const ScanResultScreen = ({ navigation, route }) => {
+
+
+  const parseQRData = (rawArray) => {
+    const parsed = {
+      who: 'Unknown',
+      what: 'Unknown',
+      where: 'Unknown',
+      when: 'Unknown',
+    };
+
+    rawArray.forEach(item => {
+      const [prefix, value, signature] = item.split(':');
+      if (!prefix || !value) return;
+
+      switch (prefix) {
+        case 'T':
+          // Treat value as UNIX timestamp
+          const ts = parseInt(value, 10);
+          parsed.when = isNaN(ts)
+            ? value
+            : new Date(ts * 1000).toLocaleString(); // Convert to readable time
+          break;
+        case 'L':
+          parsed.where = value;
+          break;
+        case 'U':
+          parsed.who = value.slice(0, 8);
+          break;
+        case 'C':
+          parsed.what = value.slice(0, 8);
+          break;
+      }
+    });
+
+    return parsed;
+  };
+
+  const { qrData = [] } = route.params || {};
+
+  const {who, what, where, when} = qrData.length >= 4
+    ? parseQRData(qrData)
+    : {who: 'Creator', what: 'Title', where: 'Location', when: 'Time'};
+
   let iconSize = 60;
 
   return (
@@ -35,19 +78,19 @@ const ScanResultScreen = ({ navigation }) => {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Who:</Text>
-              <Text style={styles.infoValue}>Creator</Text>
+              <Text style={styles.infoValue}>{who}</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>What:</Text>
-              <Text style={styles.infoValue}>Title</Text>
+              <Text style={styles.infoValue}>{what}</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Where:</Text>
-              <Text style={styles.infoValue}>Location</Text>
+              <Text style={styles.infoValue}>{where}</Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>When:</Text>
-              <Text style={styles.infoValue}>Time</Text>
+              <Text style={styles.infoValue}>{when}</Text>
             </View>
           </View>
         </View>
@@ -119,6 +162,7 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 5,
     width: '75%',
   },
@@ -128,7 +172,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoValue: {
-    fontSize: 20,
+    fontSize: 13,
   },
   actionContainer: {
     flex: 1,

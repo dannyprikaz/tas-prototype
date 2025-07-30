@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, SafeAreaView, Button } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -9,14 +9,20 @@ import ScreenQRModule from '../../modules/screen-qr-module';
 
 const emitter = new EventEmitter(ScreenQRModule);
 
-emitter.addListener('onQRCodeDetected', ({ value }) => {
-
-  console.log('✅ QR Code Detected:', value);
-});
-
 const ScanScreen = ({ navigation }) => {
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
+
+
+
+  useEffect(() => {
+    const subscription = emitter.addListener('onQRCodeDetected', ({ value }) => {
+      console.log('✅ QR Code Detected:', value);
+      navigation.navigate('ScanResult', { qrData: value });
+    });
+
+    return () => subscription.remove();
+  }, [navigation]);
 
   if (!permission) {
     // Camera permissions are still loading.
