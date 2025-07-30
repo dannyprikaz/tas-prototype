@@ -30,13 +30,49 @@ class SampleHandler: RPBroadcastSampleHandler {
 
 
   func processFrameBuffer(_ sampleBuffer: CMSampleBuffer) {
-    guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+      guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-    let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .up, options: [:])
-    DispatchQueue.global(qos: .userInitiated).async {
-      try? handler.perform([self.qrRequest])
-    }
+      // Convert the pixel buffer to a CIImage
+      let fullImage = CIImage(cvPixelBuffer: pixelBuffer)
+      let width = fullImage.extent.width
+      let height = fullImage.extent.height
+
+      // Define region of interest (top-left 25%)
+      let roiRect = CGRect(
+          x: 0,
+          y: 0,
+          width: width * 0.4,
+          height: height * 0.25
+      )
+
+      let croppedImage = fullImage.cropped(to: roiRect)
+
+      // Convert cropped image back to a pixel buffer
+      var croppedPixelBuffer: CVPixelBuffer?
+      let attrs: [String: Any] = [
+          kCVPixelBufferCGImageCompatibilityKey as String: true,
+          kCVPixelBufferCGBitmapContextCompatibilityKey as String: true
+      ]
+
+      CVPixelBufferCreate(
+          kCFAllocatorDefault,
+          Int(roiRect.width),
+          Int(roiRect.height),
+          kCVPixelFormatType_32BGRA,
+          attrs as CFDictionary,
+          &croppedPixelBuffer
+      )
+
+      guard let outputBuffer = croppedPixelBuffer else { return }
+
+      let context = CIContext()
+      context.render(croppedImage, to: outputBuffer)
+
+      let requestHandler = VNImageRequestHandler(cvPixelBuffer: outputBuffer, orientation: .up, options: [:])
+
+      try? requestHandler.perform([self.qrRequest])
   }
+
 
   func handleBarcodes(_ results: [Any]?, error: Error?) {
     guard let results = results as? [VNBarcodeObservation] else { return }
