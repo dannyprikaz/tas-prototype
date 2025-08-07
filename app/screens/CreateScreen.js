@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AddSignature from '../../modules/add-signature';
 import elliptic from 'elliptic';
@@ -23,6 +24,7 @@ import elliptic from 'elliptic';
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
+  const [ locationPermission, requestLocationPermission ] = Location.useForegroundPermissions();
   const [photosPermission, requestPhotosPermission] = MediaLibrary.usePermissions();
   const ref = useRef(null);
   const [mode, setMode] = useState("video");
@@ -53,6 +55,14 @@ const CreateScreen = ({ navigation }) => {
       </View>
     );
   }
+
+  const logLocation = async () => {
+    if (locationPermission?.status !== 'granted') {
+        await requestLocationPermission();
+    }
+    const location = await Location.getCurrentPositionAsync();
+    console.log(location);
+  };
 
   const recordVideo = async () => {
     if (recording) {
@@ -134,6 +144,9 @@ const CreateScreen = ({ navigation }) => {
 
       {/* Bottom Bar */}
       <View style={styles.shutterContainer}>
+        <Pressable onPress={logLocation}>
+          <FontAwesome6 name="location-pin" size={32} color="white" />
+        </Pressable>
         <Pressable onPress={recordVideo}>
           {({ pressed }) => (
             <View

@@ -3,50 +3,50 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		3969EB9F1677EE3447A75D55 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1271C961E2CA7C1517945EC /* ExpoModulesProvider.swift */; };
+		3BB73C1A13AD970FE36CC7D0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1F7CDF4CE9A9E8C488E42D6E /* PrivacyInfo.xcprivacy */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		5E028A7D0E64C533420709B8 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFAA953AC4C350E6743D744 /* ExpoModulesProvider.swift */; };
-		6329CDA8CE8D2B6D034F675C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 48CA03373250B979570652C2 /* PrivacyInfo.xcprivacy */; };
-		6E647C201929739C58CBB29B /* libPods-tasprototype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F122BD6BE99401FEA50A27 /* libPods-tasprototype.a */; };
+		7ADB42E7F945A81F1E1E096F /* libPods-tasprototype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 232020D84810CE680ED61A61 /* libPods-tasprototype.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		D87AB6EC2E1C992C001883C1 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87AB6EB2E1C992C001883C1 /* ReplayKit.framework */; };
-		D87AB6F62E1C992C001883C1 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87AB6EB2E1C992C001883C1 /* ReplayKit.framework */; };
-		D87AB6F82E1C992C001883C1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D87AB6F72E1C992C001883C1 /* UIKit.framework */; };
-		D87AB6FF2E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D87AB6F52E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		D87AB7022E1C992C001883C1 /* TASBroadcastExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D87AB6EA2E1C992C001883C1 /* TASBroadcastExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D8DBA2CF2E453196000FD791 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8DBA2CE2E453196000FD791 /* ReplayKit.framework */; };
+		D8DBA2D92E453196000FD791 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8DBA2CE2E453196000FD791 /* ReplayKit.framework */; };
+		D8DBA2DB2E453196000FD791 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8DBA2DA2E453196000FD791 /* UIKit.framework */; };
+		D8DBA2E22E453196000FD791 /* TASBroadcastExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D8DBA2D82E453196000FD791 /* TASBroadcastExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D8DBA2E52E453196000FD791 /* TASBroadcastExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D8DBA2CD2E453195000FD791 /* TASBroadcastExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		D87AB6FD2E1C992C001883C1 /* PBXContainerItemProxy */ = {
+		D8DBA2E02E453196000FD791 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D87AB6F42E1C992C001883C1;
+			remoteGlobalIDString = D8DBA2D72E453196000FD791;
 			remoteInfo = TASBroadcastExtensionSetupUI;
 		};
-		D87AB7002E1C992C001883C1 /* PBXContainerItemProxy */ = {
+		D8DBA2E32E453196000FD791 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D87AB6E92E1C992C001883C1;
+			remoteGlobalIDString = D8DBA2CC2E453195000FD791;
 			remoteInfo = TASBroadcastExtension;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D87AB7032E1C992C001883C1 /* Embed Foundation Extensions */ = {
+		D8DBA2EE2E453196000FD791 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				D87AB6FF2E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex in Embed Foundation Extensions */,
-				D87AB7022E1C992C001883C1 /* TASBroadcastExtension.appex in Embed Foundation Extensions */,
+				D8DBA2E22E453196000FD791 /* TASBroadcastExtensionSetupUI.appex in Embed Foundation Extensions */,
+				D8DBA2E52E453196000FD791 /* TASBroadcastExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,65 +57,42 @@
 		13B07F961A680F5B00A75B9A /* tasprototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tasprototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = tasprototype/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = tasprototype/Info.plist; sourceTree = "<group>"; };
-		1CFAA953AC4C350E6743D744 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-tasprototype/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		41F122BD6BE99401FEA50A27 /* libPods-tasprototype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-tasprototype.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		48CA03373250B979570652C2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = tasprototype/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1F7CDF4CE9A9E8C488E42D6E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = tasprototype/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		22B832B38693DBAC35FCADCE /* Pods-tasprototype.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.release.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.release.xcconfig"; sourceTree = "<group>"; };
+		232020D84810CE680ED61A61 /* libPods-tasprototype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-tasprototype.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9830519B391A8CE330898648 /* Pods-tasprototype.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.debug.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.debug.xcconfig"; sourceTree = "<group>"; };
+		A1271C961E2CA7C1517945EC /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-tasprototype/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = tasprototype/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B7F61115AF0983E47DF75633 /* Pods-tasprototype.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.debug.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D867CE022E3AA1C500CEA012 /* tasprototype.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tasprototype.entitlements; sourceTree = "<group>"; };
-		D87AB6EA2E1C992C001883C1 /* TASBroadcastExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TASBroadcastExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		D87AB6EB2E1C992C001883C1 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
-		D87AB6F52E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TASBroadcastExtensionSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		D87AB6F72E1C992C001883C1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		EAE75E72FA0890E94942893F /* Pods-tasprototype.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tasprototype.release.xcconfig"; path = "Target Support Files/Pods-tasprototype/Pods-tasprototype.release.xcconfig"; sourceTree = "<group>"; };
+		D8DBA2CD2E453195000FD791 /* TASBroadcastExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TASBroadcastExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8DBA2CE2E453196000FD791 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		D8DBA2D82E453196000FD791 /* TASBroadcastExtensionSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TASBroadcastExtensionSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8DBA2DA2E453196000FD791 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = tasprototype/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* tasprototype-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "tasprototype-Bridging-Header.h"; path = "tasprototype/tasprototype-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D87AB7082E1C992C001883C1 /* Exceptions for "TASBroadcastExtension" folder in "TASBroadcastExtension" target */ = {
+		D8DBA2E62E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D87AB6E92E1C992C001883C1 /* TASBroadcastExtension */;
+			target = D8DBA2CC2E453195000FD791 /* TASBroadcastExtension */;
 		};
-		D87AB70A2E1C992C001883C1 /* Exceptions for "TASBroadcastExtensionSetupUI" folder in "TASBroadcastExtensionSetupUI" target */ = {
+		D8DBA2EA2E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D87AB6F42E1C992C001883C1 /* TASBroadcastExtensionSetupUI */;
+			target = D8DBA2D72E453196000FD791 /* TASBroadcastExtensionSetupUI */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D87AB6ED2E1C992C001883C1 /* TASBroadcastExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D87AB7082E1C992C001883C1 /* Exceptions for "TASBroadcastExtension" folder in "TASBroadcastExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TASBroadcastExtension;
-			sourceTree = "<group>";
-		};
-		D87AB6F92E1C992C001883C1 /* TASBroadcastExtensionSetupUI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D87AB70A2E1C992C001883C1 /* Exceptions for "TASBroadcastExtensionSetupUI" folder in "TASBroadcastExtensionSetupUI" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TASBroadcastExtensionSetupUI;
-			sourceTree = "<group>";
-		};
+		D8DBA2D02E453196000FD791 /* TASBroadcastExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D8DBA2E62E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TASBroadcastExtension; sourceTree = "<group>"; };
+		D8DBA2DC2E453196000FD791 /* TASBroadcastExtensionSetupUI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D8DBA2EA2E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TASBroadcastExtensionSetupUI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,24 +100,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E647C201929739C58CBB29B /* libPods-tasprototype.a in Frameworks */,
+				7ADB42E7F945A81F1E1E096F /* libPods-tasprototype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87AB6E72E1C992C001883C1 /* Frameworks */ = {
+		D8DBA2CA2E453195000FD791 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D87AB6EC2E1C992C001883C1 /* ReplayKit.framework in Frameworks */,
+				D8DBA2CF2E453196000FD791 /* ReplayKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87AB6F22E1C992C001883C1 /* Frameworks */ = {
+		D8DBA2D52E453196000FD791 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D87AB6F62E1C992C001883C1 /* ReplayKit.framework in Frameworks */,
-				D87AB6F82E1C992C001883C1 /* UIKit.framework in Frameworks */,
+				D8DBA2D92E453196000FD791 /* ReplayKit.framework in Frameworks */,
+				D8DBA2DB2E453196000FD791 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,14 +127,13 @@
 		13B07FAE1A68108700A75B9A /* tasprototype */ = {
 			isa = PBXGroup;
 			children = (
-				D867CE022E3AA1C500CEA012 /* tasprototype.entitlements */,
 				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
 				F11748442D0722820044C1D9 /* tasprototype-Bridging-Header.h */,
 				BB2F792B24A3F905000567C9 /* Supporting */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				48CA03373250B979570652C2 /* PrivacyInfo.xcprivacy */,
+				1F7CDF4CE9A9E8C488E42D6E /* PrivacyInfo.xcprivacy */,
 			);
 			name = tasprototype;
 			sourceTree = "<group>";
@@ -166,11 +142,27 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				41F122BD6BE99401FEA50A27 /* libPods-tasprototype.a */,
-				D87AB6EB2E1C992C001883C1 /* ReplayKit.framework */,
-				D87AB6F72E1C992C001883C1 /* UIKit.framework */,
+				232020D84810CE680ED61A61 /* libPods-tasprototype.a */,
+				D8DBA2CE2E453196000FD791 /* ReplayKit.framework */,
+				D8DBA2DA2E453196000FD791 /* UIKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		53D03244EDFC871B1AB1F6FB /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				6D01D78686CFB7735BC955BC /* tasprototype */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		6D01D78686CFB7735BC955BC /* tasprototype */ = {
+			isa = PBXGroup;
+			children = (
+				A1271C961E2CA7C1517945EC /* ExpoModulesProvider.swift */,
+			);
+			name = tasprototype;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -180,17 +172,26 @@
 			name = Libraries;
 			sourceTree = "<group>";
 		};
+		83A9F9F35135B41D9F8C8269 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9830519B391A8CE330898648 /* Pods-tasprototype.debug.xcconfig */,
+				22B832B38693DBAC35FCADCE /* Pods-tasprototype.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
 				13B07FAE1A68108700A75B9A /* tasprototype */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				D87AB6ED2E1C992C001883C1 /* TASBroadcastExtension */,
-				D87AB6F92E1C992C001883C1 /* TASBroadcastExtensionSetupUI */,
+				D8DBA2D02E453196000FD791 /* TASBroadcastExtension */,
+				D8DBA2DC2E453196000FD791 /* TASBroadcastExtensionSetupUI */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				E14A376E4C057A445C9892F6 /* Pods */,
-				FC72F885C4DA8305662E2707 /* ExpoModulesProviders */,
+				83A9F9F35135B41D9F8C8269 /* Pods */,
+				53D03244EDFC871B1AB1F6FB /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -201,8 +202,8 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* tasprototype.app */,
-				D87AB6EA2E1C992C001883C1 /* TASBroadcastExtension.appex */,
-				D87AB6F52E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex */,
+				D8DBA2CD2E453195000FD791 /* TASBroadcastExtension.appex */,
+				D8DBA2D82E453196000FD791 /* TASBroadcastExtensionSetupUI.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -216,31 +217,6 @@
 			path = tasprototype/Supporting;
 			sourceTree = "<group>";
 		};
-		E14A376E4C057A445C9892F6 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				B7F61115AF0983E47DF75633 /* Pods-tasprototype.debug.xcconfig */,
-				EAE75E72FA0890E94942893F /* Pods-tasprototype.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		E81D0340788FBE7EE8EA3643 /* tasprototype */ = {
-			isa = PBXGroup;
-			children = (
-				1CFAA953AC4C350E6743D744 /* ExpoModulesProvider.swift */,
-			);
-			name = tasprototype;
-			sourceTree = "<group>";
-		};
-		FC72F885C4DA8305662E2707 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				E81D0340788FBE7EE8EA3643 /* tasprototype */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -249,64 +225,68 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "tasprototype" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				DD9ADD5AC8B309CAB34379CB /* [Expo] Configure project */,
+				67CD82713EE7EC69B0734110 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				1C8925C79A40167AC0971939 /* [CP] Embed Pods Frameworks */,
-				D87AB7032E1C992C001883C1 /* Embed Foundation Extensions */,
+				250D8B7A515AC94212F29B86 /* [CP] Embed Pods Frameworks */,
+				D8DBA2EE2E453196000FD791 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D87AB6FE2E1C992C001883C1 /* PBXTargetDependency */,
-				D87AB7012E1C992C001883C1 /* PBXTargetDependency */,
+				D8DBA2E12E453196000FD791 /* PBXTargetDependency */,
+				D8DBA2E42E453196000FD791 /* PBXTargetDependency */,
 			);
 			name = tasprototype;
 			productName = tasprototype;
 			productReference = 13B07F961A680F5B00A75B9A /* tasprototype.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D87AB6E92E1C992C001883C1 /* TASBroadcastExtension */ = {
+		D8DBA2CC2E453195000FD791 /* TASBroadcastExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D87AB7092E1C992C001883C1 /* Build configuration list for PBXNativeTarget "TASBroadcastExtension" */;
+			buildConfigurationList = D8DBA2E72E453196000FD791 /* Build configuration list for PBXNativeTarget "TASBroadcastExtension" */;
 			buildPhases = (
-				D87AB6E62E1C992C001883C1 /* Sources */,
-				D87AB6E72E1C992C001883C1 /* Frameworks */,
-				D87AB6E82E1C992C001883C1 /* Resources */,
+				D8DBA2C92E453195000FD791 /* Sources */,
+				D8DBA2CA2E453195000FD791 /* Frameworks */,
+				D8DBA2CB2E453195000FD791 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D87AB6ED2E1C992C001883C1 /* TASBroadcastExtension */,
+				D8DBA2D02E453196000FD791 /* TASBroadcastExtension */,
 			);
 			name = TASBroadcastExtension;
+			packageProductDependencies = (
+			);
 			productName = TASBroadcastExtension;
-			productReference = D87AB6EA2E1C992C001883C1 /* TASBroadcastExtension.appex */;
+			productReference = D8DBA2CD2E453195000FD791 /* TASBroadcastExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		D87AB6F42E1C992C001883C1 /* TASBroadcastExtensionSetupUI */ = {
+		D8DBA2D72E453196000FD791 /* TASBroadcastExtensionSetupUI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D87AB70B2E1C992C001883C1 /* Build configuration list for PBXNativeTarget "TASBroadcastExtensionSetupUI" */;
+			buildConfigurationList = D8DBA2EB2E453196000FD791 /* Build configuration list for PBXNativeTarget "TASBroadcastExtensionSetupUI" */;
 			buildPhases = (
-				D87AB6F12E1C992C001883C1 /* Sources */,
-				D87AB6F22E1C992C001883C1 /* Frameworks */,
-				D87AB6F32E1C992C001883C1 /* Resources */,
+				D8DBA2D42E453196000FD791 /* Sources */,
+				D8DBA2D52E453196000FD791 /* Frameworks */,
+				D8DBA2D62E453196000FD791 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D87AB6F92E1C992C001883C1 /* TASBroadcastExtensionSetupUI */,
+				D8DBA2DC2E453196000FD791 /* TASBroadcastExtensionSetupUI */,
 			);
 			name = TASBroadcastExtensionSetupUI;
+			packageProductDependencies = (
+			);
 			productName = TASBroadcastExtensionSetupUI;
-			productReference = D87AB6F52E1C992C001883C1 /* TASBroadcastExtensionSetupUI.appex */;
+			productReference = D8DBA2D82E453196000FD791 /* TASBroadcastExtensionSetupUI.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -319,12 +299,14 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = BUP8ZP8X4V;
 						LastSwiftMigration = 1250;
+						ProvisioningStyle = Automatic;
 					};
-					D87AB6E92E1C992C001883C1 = {
+					D8DBA2CC2E453195000FD791 = {
 						CreatedOnToolsVersion = 16.4;
 					};
-					D87AB6F42E1C992C001883C1 = {
+					D8DBA2D72E453196000FD791 = {
 						CreatedOnToolsVersion = 16.4;
 					};
 				};
@@ -343,8 +325,8 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* tasprototype */,
-				D87AB6E92E1C992C001883C1 /* TASBroadcastExtension */,
-				D87AB6F42E1C992C001883C1 /* TASBroadcastExtensionSetupUI */,
+				D8DBA2CC2E453195000FD791 /* TASBroadcastExtension */,
+				D8DBA2D72E453196000FD791 /* TASBroadcastExtensionSetupUI */,
 			);
 		};
 /* End PBXProject section */
@@ -357,18 +339,18 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				6329CDA8CE8D2B6D034F675C /* PrivacyInfo.xcprivacy in Resources */,
+				3BB73C1A13AD970FE36CC7D0 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87AB6E82E1C992C001883C1 /* Resources */ = {
+		D8DBA2CB2E453195000FD791 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87AB6F32E1C992C001883C1 /* Resources */ = {
+		D8DBA2D62E453196000FD791 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -415,7 +397,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1C8925C79A40167AC0971939 /* [CP] Embed Pods Frameworks */ = {
+		250D8B7A515AC94212F29B86 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -434,6 +416,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-tasprototype/Pods-tasprototype-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		67CD82713EE7EC69B0734110 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-tasprototype/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -475,25 +476,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-tasprototype/Pods-tasprototype-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DD9ADD5AC8B309CAB34379CB /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-tasprototype/expo-configure-project.sh\"\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -502,18 +484,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				5E028A7D0E64C533420709B8 /* ExpoModulesProvider.swift in Sources */,
+				3969EB9F1677EE3447A75D55 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87AB6E62E1C992C001883C1 /* Sources */ = {
+		D8DBA2C92E453195000FD791 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D87AB6F12E1C992C001883C1 /* Sources */ = {
+		D8DBA2D42E453196000FD791 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -523,26 +505,28 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		D87AB6FE2E1C992C001883C1 /* PBXTargetDependency */ = {
+		D8DBA2E12E453196000FD791 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D87AB6F42E1C992C001883C1 /* TASBroadcastExtensionSetupUI */;
-			targetProxy = D87AB6FD2E1C992C001883C1 /* PBXContainerItemProxy */;
+			target = D8DBA2D72E453196000FD791 /* TASBroadcastExtensionSetupUI */;
+			targetProxy = D8DBA2E02E453196000FD791 /* PBXContainerItemProxy */;
 		};
-		D87AB7012E1C992C001883C1 /* PBXTargetDependency */ = {
+		D8DBA2E42E453196000FD791 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D87AB6E92E1C992C001883C1 /* TASBroadcastExtension */;
-			targetProxy = D87AB7002E1C992C001883C1 /* PBXContainerItemProxy */;
+			target = D8DBA2CC2E453195000FD791 /* TASBroadcastExtension */;
+			targetProxy = D8DBA2E32E453196000FD791 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B7F61115AF0983E47DF75633 /* Pods-tasprototype.debug.xcconfig */;
+			baseConfigurationReference = 9830519B391A8CE330898648 /* Pods-tasprototype.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = tasprototype/tasprototype.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BUP8ZP8X4V;
 				ENABLE_BITCODE = NO;
@@ -575,11 +559,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EAE75E72FA0890E94942893F /* Pods-tasprototype.release.xcconfig */;
+			baseConfigurationReference = 22B832B38693DBAC35FCADCE /* Pods-tasprototype.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = tasprototype/tasprototype.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BUP8ZP8X4V;
 				INFOPLIST_FILE = tasprototype/Info.plist;
@@ -659,10 +645,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -717,10 +700,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -728,7 +708,7 @@
 			};
 			name = Release;
 		};
-		D87AB7042E1C992C001883C1 /* Debug */ = {
+		D8DBA2E82E453196000FD791 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -740,6 +720,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtension/TASBroadcastExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -760,7 +741,6 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dannyprikaz.tasprototype.TASBroadcastExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -772,7 +752,7 @@
 			};
 			name = Debug;
 		};
-		D87AB7052E1C992C001883C1 /* Release */ = {
+		D8DBA2E92E453196000FD791 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -784,6 +764,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtension/TASBroadcastExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -804,7 +785,6 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dannyprikaz.tasprototype.TASBroadcastExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -815,7 +795,7 @@
 			};
 			name = Release;
 		};
-		D87AB7062E1C992C001883C1 /* Debug */ = {
+		D8DBA2EC2E453196000FD791 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -826,7 +806,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtensionSetupUI/TASBroadcastExtensionSetupUI.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -847,7 +827,6 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dannyprikaz.tasprototype.TASBroadcastExtensionSetupUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -859,7 +838,7 @@
 			};
 			name = Debug;
 		};
-		D87AB7072E1C992C001883C1 /* Release */ = {
+		D8DBA2ED2E453196000FD791 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -870,7 +849,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtensionSetupUI/TASBroadcastExtensionSetupUI.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -891,7 +870,6 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dannyprikaz.tasprototype.TASBroadcastExtensionSetupUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -923,20 +901,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D87AB7092E1C992C001883C1 /* Build configuration list for PBXNativeTarget "TASBroadcastExtension" */ = {
+		D8DBA2E72E453196000FD791 /* Build configuration list for PBXNativeTarget "TASBroadcastExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D87AB7042E1C992C001883C1 /* Debug */,
-				D87AB7052E1C992C001883C1 /* Release */,
+				D8DBA2E82E453196000FD791 /* Debug */,
+				D8DBA2E92E453196000FD791 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D87AB70B2E1C992C001883C1 /* Build configuration list for PBXNativeTarget "TASBroadcastExtensionSetupUI" */ = {
+		D8DBA2EB2E453196000FD791 /* Build configuration list for PBXNativeTarget "TASBroadcastExtensionSetupUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D87AB7062E1C992C001883C1 /* Debug */,
-				D87AB7072E1C992C001883C1 /* Release */,
+				D8DBA2EC2E453196000FD791 /* Debug */,
+				D8DBA2ED2E453196000FD791 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
