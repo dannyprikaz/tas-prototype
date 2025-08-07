@@ -12,6 +12,7 @@ import {
     View,
     SafeAreaView,
     TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as MediaLibrary from "expo-media-library";
@@ -27,6 +28,7 @@ const CreateScreen = ({ navigation }) => {
   const [mode, setMode] = useState("video");
   const [facing, setFacing] = useState("back");
   const [recording, setRecording] = useState(false);
+  const [signing, setSigning] = useState(false);
   const privateKeyHex = 'f7c2af38aa596a6d9dc3373ccfe5c77aa55f30aae53ea2d094ad434e7b67263f';
   const devCertXID = 'D26M1H72BCLC715I2OOG';
   const devContentXID = '9bsv0s37pdv002seao8g'.toUpperCase();
@@ -61,14 +63,32 @@ const CreateScreen = ({ navigation }) => {
     setRecording(true);
     const startTime = Math.floor(Date.now() / 1000);
     const video = await ref.current?.recordAsync();
-    try {
-      // const modifiedVideoUri = await AddSignature.addQROverlayToVideo(video.uri, startTime, privateKeyHex, devCertXID);
-      const modifiedVideoUri = await AddSignature.addQROverlayToVideo(video.uri, startTime, privateKeyHex, devCertXID, devContentXID, devGeoHash);
-      console.log('Modified URI: ' + modifiedVideoUri);
-      saveVideo({uri: modifiedVideoUri});
-    } catch (err) {
-      console.error('Failed to add text overlay:', err);
-    }
+    setSigning(true);
+
+    setTimeout(async () => {
+      try {
+        const modifiedVideoUri = await AddSignature.addQROverlayToVideo(
+          video.uri,
+          startTime,
+          privateKeyHex,
+          devCertXID,
+          devContentXID,
+          devGeoHash
+        );
+        console.log("Modified URI: " + modifiedVideoUri);
+
+        try {
+          await saveVideo({ uri: modifiedVideoUri });
+        } catch (saveErr) {
+          console.error("Error saving video:", saveErr);
+        }
+
+      } catch (err) {
+        console.error("Failed to add text overlay:", err);
+      } finally {
+        setSigning(false);
+      }
+    }, 0);
   };
 
   const saveVideo = async (video) => {
@@ -83,57 +103,61 @@ const CreateScreen = ({ navigation }) => {
     setFacing((prev) => (prev === "back" ? "front" : "back"));
   };
 
-  const renderCamera = () => {
-    return (
-        <CameraView
-            style={styles.camera}
-            ref={ref}
-            mode={mode}
-            facing={facing}
-            mute={false}
-            responsiveOrientationWhenOrientationLocked
-        >
-            <SafeAreaView>
-                  <TouchableOpacity 
-                    style={styles.closeButton}
-                    onPress={() => navigation.goBack()}
-                  >
-                    <Ionicons name="close" size={48} color="#fff" />
-                  </TouchableOpacity>
-            </SafeAreaView>
-            <View style={styles.shutterContainer}>
-            <Pressable onPress={recordVideo}>
-                {({ pressed }) => (
-                <View
-                    style={[
-                    styles.shutterBtn,
-                    {
-                        opacity: pressed ? 0.5 : 1,
-                    },
-                    ]}
-                >
-                    <View
-                    style={[
-                        recording ? styles.shutterBtnInnerStop : styles.shutterBtnInnerStart,
-                        {
-                        backgroundColor: mode === "picture" ? "white" : "red",
-                        },
-                    ]}
-                    />
-                </View>
-                )}
-            </Pressable>
-            <Pressable onPress={toggleFacing}>
-                <FontAwesome6 name="rotate-left" size={32} color="white" />
-            </Pressable>
-            </View>
-        </CameraView>
-    );
-  };
-
   return (
     <View style={styles.container}>
-      {renderCamera()}
+      <CameraView
+        style={StyleSheet.absoluteFill}
+        ref={ref}
+        mode={mode}
+        facing={facing}
+        mute={false}
+        responsiveOrientationWhenOrientationLocked
+      />
+      
+      {/* Top Bar */}
+      <SafeAreaView style={styles.topControls}>
+        <TouchableOpacity 
+          style={styles.closeButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="close" size={48} color="#fff" />
+        </TouchableOpacity>
+      </SafeAreaView>
+
+      {/* Signing Modal */}
+      {signing && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={{ color: 'white' }}>Signing...</Text>
+        </View>
+      )}
+
+      {/* Bottom Bar */}
+      <View style={styles.shutterContainer}>
+        <Pressable onPress={recordVideo}>
+          {({ pressed }) => (
+            <View
+              style={[
+                styles.shutterBtn,
+                { opacity: pressed ? 0.5 : 1 },
+              ]}
+            >
+              <View
+                style={[
+                  recording ? styles.shutterBtnInnerStop : styles.shutterBtnInnerStart,
+                  {
+                    backgroundColor: mode === "picture" ? "white" : "red",
+                  },
+                ]}
+              />
+            </View>
+          )}
+        </Pressable>
+
+        <Pressable onPress={toggleFacing}>
+          <FontAwesome6 name="rotate-left" size={32} color="white" />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -155,6 +179,20 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     flexDirection: 'row',
   },
+  topControls: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
   shutterContainer: {
     position: "absolute",
     bottom: 44,
@@ -164,6 +202,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 30,
+    zIndex: 10,
   },
   shutterBtn: {
     backgroundColor: "transparent",
