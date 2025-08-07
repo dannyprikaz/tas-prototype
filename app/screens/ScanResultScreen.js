@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Text from '../components/text';
 import Header from '../components/header';
 import BottomNav from '../components/bottomNav';
+import { authenticateSignature } from '../services/signatureAuthService';
 
 const ScanResultScreen = ({ navigation, route }) => {
-
+  const [isValid, setIsValid] = useState(null);
 
   const parseQRData = (rawArray) => {
     const parsed = {
@@ -48,6 +49,25 @@ const ScanResultScreen = ({ navigation, route }) => {
   const {who, what, where, when} = qrData.length >= 4
     ? parseQRData(qrData)
     : {who: 'Creator', what: 'Title', where: 'Location', when: 'Time'};
+
+  useEffect(() => {
+    const validate = async () => {
+      if (qrData.length >= 4) {
+        try {
+          const result = await authenticateSignature(qrData);
+          console.log("🔐 Signature valid:", result);
+          setIsValid(result);
+        } catch (err) {
+          console.error("Error authenticating signature:", err);
+          setIsValid(false);
+        }
+      } else {
+        setIsValid(false);
+      }
+    };
+
+    validate();
+  }, [qrData]);
 
   let iconSize = 60;
 
@@ -93,6 +113,11 @@ const ScanResultScreen = ({ navigation, route }) => {
               <Text style={styles.infoValue}>{when}</Text>
             </View>
           </View>
+        </View>
+        <View style={styles.authenticationStatus}>
+          {isValid === null && <Text>Checking Signature...</Text>}
+          {isValid === true && <Text>✅ Valid</Text>}
+          {isValid === false && <Text>❌ Invalid Signature</Text>}
         </View>
 
         {/* Action Buttons */}
@@ -173,6 +198,10 @@ const styles = StyleSheet.create({
   },
   infoValue: {
     fontSize: 13,
+  },
+  authenticationStatus: {
+    alignItems: 'center',
+    marginBottom: 5,
   },
   actionContainer: {
     flex: 1,

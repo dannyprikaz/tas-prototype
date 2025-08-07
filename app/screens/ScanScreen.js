@@ -7,22 +7,33 @@ import Text from '../components/text';
 import { EventEmitter } from 'expo-modules-core';
 import ScreenQRModule from '../../modules/screen-qr-module';
 
-const emitter = new EventEmitter(ScreenQRModule);
-
 const ScanScreen = ({ navigation }) => {
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
 
-
-
   useEffect(() => {
-    const subscription = emitter.addListener('onQRCodeDetected', ({ value }) => {
-      console.log('✅ QR Code Detected:', value);
-      navigation.navigate('ScanResult', { qrData: value });
-    });
+  const emitter = new EventEmitter(ScreenQRModule);
+  console.log("📡 Adding QR listener");
 
-    return () => subscription.remove();
-  }, [navigation]);
+  let hasNavigated = false;
+
+  const subscription = emitter.addListener('onQRCodeDetected', ({ value }) => {
+    if (hasNavigated) return;
+    hasNavigated = true;
+
+    console.log('✅ QR Code Detected:', value);
+
+    // Small delay ensures `return () => ...` cleanup executes properly
+    setTimeout(() => {
+      navigation.navigate('ScanResult', { qrData: value });
+    }, 100); // 100–200ms is usually enough
+  });
+
+  return () => {
+    console.log("🧹 Removing QR listener");
+    subscription.remove();
+  };
+}, [navigation]);
 
   if (!permission) {
     // Camera permissions are still loading.

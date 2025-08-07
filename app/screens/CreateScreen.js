@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  CameraMode,
-  CameraType,
   CameraView,
   useCameraPermissions,
 } from "expo-camera";
@@ -16,15 +14,9 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Image } from "expo-image";
 import * as MediaLibrary from "expo-media-library";
-import * as FileSystem from "expo-file-system";
-import uuid from 'react-native-uuid';
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AddSignature from '../../modules/add-signature';
-import { createHash } from 'react-native-quick-crypto';
 import elliptic from 'elliptic';
 
 
@@ -35,9 +27,8 @@ const CreateScreen = ({ navigation }) => {
   const [mode, setMode] = useState("video");
   const [facing, setFacing] = useState("back");
   const [recording, setRecording] = useState(false);
-  const privateKeyHex = '35d7680c6f6c24a71ab692e7dd2e3f698eb4843ae27ef91acbdb55c1fc1b5836';
-  const devCertID = 'cd41773f-c9fa-5bfd-8e0a-66b472b679fb';
-  const devCertXID = 'kpj4pb1zvu32ec5h1xz'.toUpperCase();
+  const privateKeyHex = 'f7c2af38aa596a6d9dc3373ccfe5c77aa55f30aae53ea2d094ad434e7b67263f';
+  const devCertXID = 'D26M1H72BCLC715I2OOG';
   const devContentXID = '9bsv0s37pdv002seao8g'.toUpperCase();
   const devGeoHash = '9q9hv9r6z'.toUpperCase();
 
