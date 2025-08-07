@@ -4,7 +4,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Text from '../components/text';
 import Header from '../components/header';
 import BottomNav from '../components/bottomNav';
-import { authenticateSignature } from '../services/signatureAuthService';
+import { authenticateSignature } from '../../services/signatureAuthService';
 
 const ScanResultScreen = ({ navigation, route }) => {
   const [isValid, setIsValid] = useState(null);
