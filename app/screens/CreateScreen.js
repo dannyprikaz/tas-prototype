@@ -20,6 +20,7 @@ import * as Location from "expo-location";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AddSignature from '../../modules/add-signature';
 import elliptic from 'elliptic';
+import Geohash from 'ngeohash';
 
 
 const CreateScreen = ({ navigation }) => {
@@ -56,12 +57,12 @@ const CreateScreen = ({ navigation }) => {
     );
   }
 
-  const logLocation = async () => {
+  const getLocation = async () => {
     if (locationPermission?.status !== 'granted') {
         await requestLocationPermission();
     }
     const location = await Location.getCurrentPositionAsync();
-    console.log(location);
+    return location;
   };
 
   const recordVideo = async () => {
@@ -72,6 +73,9 @@ const CreateScreen = ({ navigation }) => {
     }
     setRecording(true);
     const startTime = Math.floor(Date.now() / 1000);
+    const location = await getLocation();
+    const { latitude, longitude } = location.coords;
+    const geohash = Geohash.encode(latitude, longitude, 4);
     const video = await ref.current?.recordAsync();
     setSigning(true);
 
@@ -83,7 +87,7 @@ const CreateScreen = ({ navigation }) => {
           privateKeyHex,
           devCertXID,
           devContentXID,
-          devGeoHash
+          geohash.toUpperCase()
         );
         console.log("Modified URI: " + modifiedVideoUri);
 
@@ -144,8 +148,8 @@ const CreateScreen = ({ navigation }) => {
 
       {/* Bottom Bar */}
       <View style={styles.shutterContainer}>
-        <Pressable onPress={logLocation}>
-          <FontAwesome6 name="location-pin" size={32} color="white" />
+        <Pressable>
+          <FontAwesome6 name="gear" size={32} color="white" />
         </Pressable>
         <Pressable onPress={recordVideo}>
           {({ pressed }) => (

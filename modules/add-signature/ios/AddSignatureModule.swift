@@ -67,25 +67,25 @@ enum QRPayload {
   func generateMessage() throws -> String {
     switch self {
     case .timeBased(let time, let signer):
-      let msg = String(time)
+        let msg = String(time).uppercased()
       let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
       let encoded = base45Encode(signature)
       return "T:\(time):\(encoded)"
 
     case .certBased(let certID, let time, let signer):
-      let msg = "\(certID)\(time)"
+        let msg = "\(certID)\(time)".uppercased()
       let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
       let encoded = base45Encode(signature)
       return "U:\(certID.uppercased()):\(encoded)"
         
     case .contentBased(let contentID, let time, let signer):
-      let msg = "\(contentID)\(time)"
+        let msg = "\(contentID)\(time)".uppercased()
       let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
       let encoded = base45Encode(signature)
       return "C:\(contentID.uppercased()):\(encoded)"
         
     case .locationBased(let geoHash, let time, let signer):
-      let msg = "\(geoHash)\(time)"
+        let msg = "\(geoHash)\(time)".uppercased()
       let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
       let encoded = base45Encode(signature)
       return "L:\(geoHash.uppercased()):\(encoded)"

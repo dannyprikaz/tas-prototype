@@ -4,10 +4,13 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Text from '../components/text';
 import Header from '../components/header';
 import BottomNav from '../components/bottomNav';
+import * as Location from "expo-location";
+import Geohash from 'ngeohash';
 import { authenticateSignature } from '../../services/signatureAuthService';
 
 const ScanResultScreen = ({ navigation, route }) => {
   const [isValid, setIsValid] = useState(null);
+  const [place, setPlace] = useState(null);
 
   const parseQRData = (rawArray) => {
     const parsed = {
@@ -69,6 +72,50 @@ const ScanResultScreen = ({ navigation, route }) => {
     validate();
   }, [qrData]);
 
+  // Reverse-geocode the (short) geohash to show a human place
+  useEffect(() => {
+    let cancelled = false;
+    const decodeAndReverseGeocode = async () => {
+      try {
+        if (!where || typeof where !== 'string') {
+          setPlace(null);
+          return;
+        }
+
+        // Ensure same case as signing code (you said signing uppercases)
+        const gh = where.trim().toUpperCase();
+
+        // decode returns object { latitude, longitude }
+        const { latitude, longitude } = Geohash.decode(gh);
+
+        // reverseGeocodeAsync expects an object
+        const results = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+        if (cancelled) return;
+
+        if (Array.isArray(results) && results.length > 0) {
+          const r = results[0];
+          // choose what you want to display. subregion is r.subregion
+          setPlace({
+            name: r.name || null,
+            city: r.city || null,
+            subregion: r.subregion || null,
+            region: r.region || null,
+            country: r.country || null,
+          });
+        } else {
+          setPlace(null);
+        }
+      } catch (err) {
+        console.warn('Reverse geocode failed:', err);
+        setPlace(null);
+      }
+    };
+
+    decodeAndReverseGeocode();
+    return () => { cancelled = true; };
+  }, [where]);
+
   let iconSize = 60;
 
   return (
@@ -106,7 +153,13 @@ const ScanResultScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Where:</Text>
-              <Text style={styles.infoValue}>{where}</Text>
+          <Text style={styles.infoValue}>
+            { place ? (
+                // prefer subregion, fallback to city, fallback to raw geohash
+                place.subregion || place.city || where
+              ) : (where || 'Location')
+            }
+          </Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>When:</Text>
