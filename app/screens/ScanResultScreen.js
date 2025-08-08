@@ -7,10 +7,12 @@ import BottomNav from '../components/bottomNav';
 import * as Location from "expo-location";
 import Geohash from 'ngeohash';
 import { authenticateSignature } from '../../services/signatureAuthService';
+import { getCert } from '../../services/certService';
 
 const ScanResultScreen = ({ navigation, route }) => {
   const [isValid, setIsValid] = useState(null);
   const [place, setPlace] = useState(null);
+  const [commonName, setCommonName] = useState(null);
 
   const parseQRData = (rawArray) => {
     const parsed = {
@@ -36,7 +38,7 @@ const ScanResultScreen = ({ navigation, route }) => {
           parsed.where = value;
           break;
         case 'U':
-          parsed.who = value.slice(0, 8);
+          parsed.who = value;
           break;
         case 'C':
           parsed.what = value.slice(0, 8);
@@ -116,6 +118,33 @@ const ScanResultScreen = ({ navigation, route }) => {
     return () => { cancelled = true; };
   }, [where]);
 
+  // Fetch common name from cert to show a real human name for Who
+  useEffect(() => {
+    console.log('Trying to get commonName');
+    let cancelled = false;
+    const fetchCommonName = async () => {
+      try {
+        if (!who || typeof who !== 'string') {
+          setCommonName(null);
+          return;
+        }
+
+        // request cert
+        const cert = await getCert(who);
+
+        if (cancelled) return;
+
+        setCommonName(cert.name);
+      } catch (err) {
+        console.warn('fetchCommonName failed:', err);
+        setCommonName(null);
+      }
+    };
+
+    fetchCommonName();
+    return () => { cancelled = true; };
+  }, [who]);
+
   let iconSize = 60;
 
   return (
@@ -145,7 +174,12 @@ const ScanResultScreen = ({ navigation, route }) => {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Who:</Text>
-              <Text style={styles.infoValue}>{who}</Text>
+              <Text style={styles.infoValue}>
+                { commonName ? (
+                    commonName || who.slice(0, 8)
+                  ) : (who.slice(0, 8) || 'Creator')
+                }
+               </Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>What:</Text>
