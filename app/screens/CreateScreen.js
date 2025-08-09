@@ -13,6 +13,7 @@ import {
     SafeAreaView,
     TouchableOpacity,
     ActivityIndicator,
+    Alert,
 } from "react-native";
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as MediaLibrary from "expo-media-library";
@@ -21,6 +22,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AddSignature from '../../modules/add-signature';
 import elliptic from 'elliptic';
 import Geohash from 'ngeohash';
+import { useAuth } from "../../contexts/AuthContext";
 
 
 const CreateScreen = ({ navigation }) => {
@@ -32,10 +34,12 @@ const CreateScreen = ({ navigation }) => {
   const [facing, setFacing] = useState("back");
   const [recording, setRecording] = useState(false);
   const [signing, setSigning] = useState(false);
-  const privateKeyHex = 'f7c2af38aa596a6d9dc3373ccfe5c77aa55f30aae53ea2d094ad434e7b67263f';
+  // const privateKeyHex = 'f7c2af38aa596a6d9dc3373ccfe5c77aa55f30aae53ea2d094ad434e7b67263f';
   const devCertXID = 'D26M1H72BCLC715I2OOG';
   const devContentXID = '9bsv0s37pdv002seao8g'.toUpperCase();
   const devGeoHash = '9q9hv9r6z'.toUpperCase();
+
+  const { certId, privateKeyHex } = useAuth();
 
   const EC = elliptic.ec;
   const ec = new EC('p256');
@@ -66,6 +70,10 @@ const CreateScreen = ({ navigation }) => {
   };
 
   const recordVideo = async () => {
+    if (!privateKeyHex) {
+      Alert.alert('Error', 'No private key available for signing.');
+      return;
+    }
     if (recording) {
       setRecording(false);
       ref.current?.stopRecording();
@@ -85,7 +93,7 @@ const CreateScreen = ({ navigation }) => {
           video.uri,
           startTime,
           privateKeyHex,
-          devCertXID,
+          certId,
           devContentXID,
           geohash.toUpperCase()
         );
