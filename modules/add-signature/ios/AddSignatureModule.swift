@@ -61,8 +61,8 @@ func base45Encode(_ data: Data) -> String {
 enum QRPayload {
   case timeBased(time: Int, signer: P256.Signing.PrivateKey)
   case certBased(certID: String, time: Int, signer: P256.Signing.PrivateKey)
-    case contentBased(contentID: String, time: Int, signer: P256.Signing.PrivateKey)
-    case locationBased(geoHash: String, time: Int, signer: P256.Signing.PrivateKey)
+  case contentBased(contentID: String, time: Int, signer: P256.Signing.PrivateKey)
+  case locationBased(geoHash: String, time: Int, signer: P256.Signing.PrivateKey)
 
   func generateMessage() throws -> String {
     switch self {
@@ -93,7 +93,7 @@ enum QRPayload {
   }
 }
 
-// MARK: - QR Layer Generator
+// MARK: - QR Layer Generator (Conservative Version)
 
 func createQRLayer(from message: String, context: CIContext, position: CGPoint, size: CGSize) throws -> CALayer {
   let filter = CIFilter.qrCodeGenerator()
@@ -129,7 +129,15 @@ public class AddSignatureModule: Module {
   public func definition() -> ModuleDefinition {
     Name("AddSignature")
 
-      AsyncFunction("addQROverlayToVideo") { (videoUrl: String, startTime: Int, privateKeyHex: String, certID: String, contentID: String, geoHash: String) -> String in
+    AsyncFunction("addQROverlayToVideo") { (videoUrl: String, startTime: Int, privateKeyHex: String, certID: String, contentID: String, geoHash: String) -> String in
+
+      print("=== AddSignature Module Called ===")
+      print("videoUrl: \(videoUrl)")
+      print("startTime: \(startTime)")
+      print("privateKeyHex length: \(privateKeyHex.count)")
+      print("certID: \(certID)")
+      print("contentID: \(contentID)")
+      print("geoHash: \(geoHash)")
 
       func transformedVideoSize(for track: AVAssetTrack) -> CGSize {
         let t = track.preferredTransform
@@ -138,30 +146,64 @@ public class AddSignatureModule: Module {
       }
 
       func processVideo() async throws -> String {
+        print("Starting video processing...")
+        
         let url = URL(fileURLWithPath: videoUrl.replacingOccurrences(of: "file://", with: ""))
+        print("Video URL: \(url)")
+        
         let asset = AVAsset(url: url)
+        print("Asset created")
 
         guard let track = asset.tracks(withMediaType: .video).first else {
+          print("❌ No video track found")
           throw NSError(domain: "AddSignature", code: 1, userInfo: [NSLocalizedDescriptionKey: "No video track found"])
         }
+        print("✓ Video track found")
 
         let composition = AVMutableComposition()
         let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         try videoTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: track, at: .zero)
+        print("✓ Video track added to composition")
 
         if let audioTrack = asset.tracks(withMediaType: .audio).first {
           let audioComp = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
           try audioComp?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: audioTrack, at: .zero)
+          print("✓ Audio track added to composition")
         }
 
+        print("Creating CIContext...")
         let context = CIContext()
-        let privateKeyData = try Data(hex: privateKeyHex).unwrap("Invalid hex")
-        let privateKey = try P256.Signing.PrivateKey(rawRepresentation: privateKeyData)
+        
+        print("Parsing private key...")
+        guard let privateKeyData = Data(hex: privateKeyHex) else {
+          print("❌ Invalid private key hex")
+          throw NSError(domain: "AddSignature", code: 2, userInfo: [NSLocalizedDescriptionKey: "Invalid private key hex"])
+        }
+        
+        print("Creating P256 private key...")
+        let privateKey: P256.Signing.PrivateKey
+        do {
+          privateKey = try P256.Signing.PrivateKey(rawRepresentation: privateKeyData)
+          print("✓ Private key created successfully")
+        } catch {
+          print("❌ Failed to create private key: \(error)")
+          throw NSError(domain: "AddSignature", code: 3, userInfo: [NSLocalizedDescriptionKey: "Failed to create private key: \(error.localizedDescription)"])
+        }
 
         let videoSize = transformedVideoSize(for: track)
+        print("Video size: \(videoSize)")
+        
         let interval = 3
         let duration = Int(CMTimeGetSeconds(asset.duration))
         let frames = duration / interval + 1
+        print("Duration: \(duration)s, Frames: \(frames), Interval: \(interval)s")
+        
+        // Limit frames for very long videos to prevent crashes
+        let maxFrames = 200 // Limit to ~10 minutes max
+        let actualFrames = min(frames, maxFrames)
+        if frames > maxFrames {
+          print("⚠️ Video too long, limiting to \(actualFrames) frames")
+        }
 
         let videoComposition = AVMutableVideoComposition()
         videoComposition.renderSize = videoSize
@@ -174,25 +216,31 @@ public class AddSignatureModule: Module {
         parentLayer.addSublayer(videoLayer)
 
         let qrSize = CGSize(width: videoSize.width * 0.1, height: videoSize.width * 0.1)
-        var allLayers: [CALayer] = []
+        print("QR size: \(qrSize)")
 
-        for i in 0..<frames {
+        print("Generating QR layers...")
+        for i in 0..<actualFrames {
           let currentTime = startTime + i * interval
+          
+          if i % 10 == 0 {
+            print("Processing frame \(i)/\(actualFrames)")
+          }
 
-          let topLeft = try createQRLayer(
-            from: try QRPayload.timeBased(time: currentTime, signer: privateKey).generateMessage(),
-            context: context,
-            position: CGPoint(x: 20, y: 20 + qrSize.height),
-            size: qrSize
-          )
-            
-          let topCenter = try createQRLayer(
-            from: try QRPayload.contentBased(contentID: contentID, time: currentTime, signer: privateKey).generateMessage(),
-            context: context,
-            position: CGPoint(x: 20 + qrSize.width, y: 20 + qrSize.height),
-            size: qrSize
-          )
-            
+          do {
+            let topLeft = try createQRLayer(
+              from: try QRPayload.timeBased(time: currentTime, signer: privateKey).generateMessage(),
+              context: context,
+              position: CGPoint(x: 20, y: 20 + qrSize.height),
+              size: qrSize
+            )
+              
+            let topCenter = try createQRLayer(
+              from: try QRPayload.contentBased(contentID: contentID, time: currentTime, signer: privateKey).generateMessage(),
+              context: context,
+              position: CGPoint(x: 20 + qrSize.width, y: 20 + qrSize.height),
+              size: qrSize
+            )
+              
             let topRight = try createQRLayer(
               from: try QRPayload.locationBased(geoHash: geoHash, time: currentTime, signer: privateKey).generateMessage(),
               context: context,
@@ -200,30 +248,35 @@ public class AddSignatureModule: Module {
               size: qrSize
             )
 
-          let bottom = try createQRLayer(
-            from: try QRPayload.certBased(certID: certID, time: currentTime, signer: privateKey).generateMessage(),
-            context: context,
-            position: CGPoint(x: 20 + qrSize.width, y: 20),
-            size: qrSize
-          )
+            let bottom = try createQRLayer(
+              from: try QRPayload.certBased(certID: certID, time: currentTime, signer: privateKey).generateMessage(),
+              context: context,
+              position: CGPoint(x: 20 + qrSize.width, y: 20),
+              size: qrSize
+            )
 
-          [topLeft, topCenter, topRight, bottom].forEach { layer in
-            parentLayer.addSublayer(layer)
-            allLayers.append(layer)
-          }
+            [topLeft, topCenter, topRight, bottom].forEach { layer in
+              parentLayer.addSublayer(layer)
+            }
 
-          let beginTime = CFTimeInterval(i * interval)
-          [topLeft, topCenter, topRight, bottom].forEach {
-            let anim = CAKeyframeAnimation(keyPath: "opacity")
-            anim.values = [0, 1, 1, 0]
-            anim.keyTimes = [0, 0.01, 0.99, 1]
-            anim.duration = CFTimeInterval(frames * interval)
-            anim.beginTime = AVCoreAnimationBeginTimeAtZero + beginTime
-            anim.fillMode = .forwards
-            anim.isRemovedOnCompletion = false
-            $0.add(anim, forKey: "opacityAnimation")
+            let beginTime = CFTimeInterval(i * interval)
+            [topLeft, topCenter, topRight, bottom].forEach { layer in
+              let anim = CAKeyframeAnimation(keyPath: "opacity")
+              anim.values = [0, 1, 1, 0]
+              anim.keyTimes = [0, 0.01, 0.99, 1]
+              anim.duration = CFTimeInterval(actualFrames * interval)
+              anim.beginTime = AVCoreAnimationBeginTimeAtZero + beginTime
+              anim.fillMode = .forwards
+              anim.isRemovedOnCompletion = false
+              layer.add(anim, forKey: "opacityAnimation_\(i)")
+            }
+          } catch {
+            print("❌ Error creating QR layer at frame \(i): \(error)")
+            throw error
           }
         }
+
+        print("✓ All QR layers created successfully")
 
         videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
 
@@ -237,23 +290,38 @@ public class AddSignatureModule: Module {
         videoComposition.instructions = [instruction]
 
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("qrOverlay-\(UUID().uuidString).mp4")
-        let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality)!
+        print("Output URL: \(outputURL)")
+        
+        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
+          print("❌ Failed to create export session")
+          throw NSError(domain: "AddSignature", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to create export session"])
+        }
+        
         exporter.outputURL = outputURL
         exporter.outputFileType = .mp4
         exporter.videoComposition = videoComposition
+        
+        print("Starting export...")
 
         return try await withCheckedThrowingContinuation { cont in
           exporter.exportAsynchronously {
             if let error = exporter.error {
+              print("❌ Export failed: \(error)")
               cont.resume(throwing: error)
             } else {
+              print("✓ Export completed successfully")
               cont.resume(returning: outputURL.path)
             }
           }
         }
       }
 
-      return try await processVideo()
+      do {
+        return try await processVideo()
+      } catch {
+        print("❌ Fatal error in addQROverlayToVideo: \(error)")
+        throw error
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import LoginHeader from '../components/loginHeader';
 import Text from '../components/text';
 import { generatePrivateKey, savePrivateKey } from '../../services/privateKeyService';
@@ -39,7 +40,10 @@ const RegisterScreen = ({ navigation }) => {
       // 5. Save private key hex to file named with cert_id
       await savePrivateKey(certData.id, privateKeyHex);
 
-      Alert.alert('Success', `Certificate registered!\nCert ID: ${certData.id}`);
+      // 6. Copy cert ID to clipboard
+      Clipboard.setString(certData.id);
+
+      Alert.alert('Success', `Certificate registered!\nCert ID: ${certData.id}\n\n📋 Cert ID copied to clipboard!`);
     } catch (error) {
       if (error.response) {
         console.error('Error status:', error.response.status);
