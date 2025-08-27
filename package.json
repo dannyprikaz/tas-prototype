@@ -11,6 +11,19 @@
     "test": "jest --watchAll",
     "lint": "expo lint"
   },
+  "codegenConfig": {
+    "name": "NativeApplySignatureSpec",
+    "type": "modules",
+    "jsSrcsDir": "specs",
+    "android": {
+      "javaPackageName": "com.nativeapplysignature"
+     },
+     "ios": {
+      "modulesProvider": {
+        "NativeApplySignature": "RCTNativeApplySignature"
+      }
+     }
+  },
   "jest": {
     "preset": "jest-expo"
   },
