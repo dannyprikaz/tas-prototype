@@ -74,6 +74,36 @@ const ScanResultScreen = ({ navigation, route }) => {
     validate();
   }, [qrData]);
 
+  const getLocationDisplayForPrecision = (precision, locationData) => {
+    if (!locationData) return null;
+
+    switch (precision) {
+      case 1: // Continent level
+        return locationData.country || 'Unknown Region';
+      case 2: // Country level  
+        return locationData.country || 'Unknown Country';
+      case 3: // State level
+        return locationData.region || locationData.country || 'Unknown Region';
+      case 4: // County level
+        return locationData.subregion || locationData.region || locationData.country || 'Unknown Area';
+      case 5: // City level
+        return locationData.city || locationData.subregion || locationData.region || 'Unknown City';
+      case 6: // Neighborhood level
+        return locationData.district || locationData.city || locationData.subregion || 'Unknown Neighborhood';
+      case 7: // Street level
+        return locationData.name || locationData.street || locationData.district || locationData.city || 'Unknown Street';
+      case 8: // Address level
+        return [
+          locationData.name,
+          locationData.street,
+          locationData.city
+        ].filter(Boolean).join(', ') || 'Unknown Address';
+      default:
+        // Fallback to most specific available
+        return locationData.subregion || locationData.city || locationData.region || locationData.country || 'Unknown Location';
+    }
+  };
+
   // Reverse-geocode the (short) geohash to show a human place
   useEffect(() => {
     let cancelled = false;
@@ -86,6 +116,9 @@ const ScanResultScreen = ({ navigation, route }) => {
 
         // Ensure same case as signing code (you said signing uppercases)
         const gh = where.trim().toUpperCase();
+        
+        // Get precision from geohash length
+        const precision = gh.length;
 
         // decode returns object { latitude, longitude }
         const { latitude, longitude } = Geohash.decode(gh);
@@ -96,21 +129,33 @@ const ScanResultScreen = ({ navigation, route }) => {
         if (cancelled) return;
 
         if (Array.isArray(results) && results.length > 0) {
-          const r = results[0];
-          // choose what you want to display. subregion is r.subregion
+          const locationData = results[0];
+          
+          // Get appropriate display text based on precision
+          const displayText = getLocationDisplayForPrecision(precision, locationData);
+          
           setPlace({
-            name: r.name || null,
-            city: r.city || null,
-            subregion: r.subregion || null,
-            region: r.region || null,
-            country: r.country || null,
+            displayText,
+            precision,
+            rawData: locationData, // Keep raw data for debugging if needed
+            geohash: gh
           });
         } else {
-          setPlace(null);
+          setPlace({
+            displayText: where,
+            precision,
+            rawData: null,
+            geohash: gh
+          });
         }
       } catch (err) {
         console.warn('Reverse geocode failed:', err);
-        setPlace(null);
+        setPlace({
+          displayText: where,
+          precision: where ? where.length : 0,
+          rawData: null,
+          geohash: where
+        });
       }
     };
 
@@ -187,13 +232,9 @@ const ScanResultScreen = ({ navigation, route }) => {
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Where:</Text>
-          <Text style={styles.infoValue}>
-            { place ? (
-                // prefer subregion, fallback to city, fallback to raw geohash
-                place.subregion || place.city || where
-              ) : (where || 'Location')
-            }
-          </Text>
+              <Text style={styles.infoValue}>
+                {place?.displayText || where || 'Location'}
+              </Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>When:</Text>

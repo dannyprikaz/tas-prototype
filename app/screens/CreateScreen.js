@@ -23,6 +23,7 @@ import AddSignature from '../../modules/add-signature';
 import elliptic from 'elliptic';
 import Geohash from 'ngeohash';
 import { useAuth } from "../../contexts/AuthContext";
+import { SettingsModal, LOCATION_LEVELS } from '../components/settingsModal'; // Import the settings modal
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -34,9 +35,32 @@ const CreateScreen = ({ navigation }) => {
   const [recording, setRecording] = useState(false);
   const [signing, setSigning] = useState(false);
   
+  // Settings state
+  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [locationLevel, setLocationLevel] = useState(3); // Default to County level (4 characters)
+  
   const devContentXID = '9bsv0s37pdv002seao8g'.toUpperCase();
 
   const { certId, privateKeyHex } = useAuth();
+
+  // Get current location precision based on setting
+  const getCurrentLocationPrecision = () => {
+    return LOCATION_LEVELS[locationLevel].precision;
+  };
+
+  // Settings handlers
+  const openSettings = () => {
+    setSettingsVisible(true);
+  };
+
+  const closeSettings = () => {
+    setSettingsVisible(false);
+  };
+
+  const handleLocationLevelChange = (newLevel) => {
+    setLocationLevel(newLevel);
+    console.log(`Location precision changed to: ${LOCATION_LEVELS[newLevel].name} (${LOCATION_LEVELS[newLevel].precision} characters)`);
+  };
 
   // Validation function to check auth state
   const validateAuthState = () => {
@@ -141,8 +165,12 @@ const CreateScreen = ({ navigation }) => {
       // Get location with error handling
       const location = await getLocation();
       const { latitude, longitude } = location.coords;
-      const geohash = Geohash.encode(latitude, longitude, 4);
-      console.log('Geohash:', geohash);
+      
+      // Use dynamic precision based on user setting
+      const precision = getCurrentLocationPrecision();
+      const geohash = Geohash.encode(latitude, longitude, precision);
+      console.log(`Geohash (${LOCATION_LEVELS[locationLevel].name} level):`, geohash);
+      console.log(`Precision: ${precision} characters`);
       
       // Validate elliptic key before recording
       validateEllipticKey();
@@ -168,6 +196,7 @@ const CreateScreen = ({ navigation }) => {
           console.log('- certId:', certId);
           console.log('- contentXID:', devContentXID);
           console.log('- geohash:', geohash.toUpperCase());
+          console.log('- location level:', LOCATION_LEVELS[locationLevel].name);
           
           const modifiedVideoUri = await AddSignature.addQROverlayToVideo(
             video.uri,
@@ -188,7 +217,7 @@ const CreateScreen = ({ navigation }) => {
             
             Alert.alert(
               'Success', 
-              'Video recorded and signed successfully!',
+              `Video recorded and signed successfully!\nLocation level: ${LOCATION_LEVELS[locationLevel].name}`,
               [{ text: 'OK', onPress: () => console.log('User acknowledged success') }]
             );
             
@@ -284,6 +313,9 @@ const CreateScreen = ({ navigation }) => {
         <Text style={styles.debugText}>
           Auth: {certId ? '✓' : '❌'} | Key: {privateKeyHex ? '✓' : '❌'}
         </Text>
+        <Text style={styles.debugText}>
+          Location: {LOCATION_LEVELS[locationLevel].name} ({getCurrentLocationPrecision()} chars)
+        </Text>
       </View>
 
       {/* Signing Modal */}
@@ -295,9 +327,17 @@ const CreateScreen = ({ navigation }) => {
         </View>
       )}
 
+      {/* Settings Modal */}
+      <SettingsModal
+        visible={settingsVisible}
+        onClose={closeSettings}
+        locationLevel={locationLevel}
+        onLocationLevelChange={handleLocationLevelChange}
+      />
+
       {/* Bottom Bar */}
       <View style={styles.shutterContainer}>
-        <Pressable>
+        <Pressable onPress={openSettings}>
           <FontAwesome6 name="gear" size={32} color="white" />
         </Pressable>
         <Pressable onPress={recordVideo}>
