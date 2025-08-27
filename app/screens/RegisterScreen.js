@@ -1,60 +1,117 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import LoginHeader from '../components/loginHeader';
 import Text from '../components/text';
+import { generatePrivateKey, savePrivateKey } from '../../services/privateKeyService';
+import { createUserId, createCSR, submitCSR } from '../../services/certService';
 
 const RegisterScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async () => {
+    try {
+      if (!email || !name) {
+        Alert.alert('Error', 'Please provide both email and name.');
+        return;
+      }
+
+      setLoading(true);
+
+      // 1. Create a userId
+      const userId = createUserId();
+
+      // 2. Generate key pair (elliptic hex keys)
+      const { privateKeyHex } = await generatePrivateKey();
+
+      // 3. Create CSR using userId + email + privateKeyHex
+      const csr = await createCSR(userId, email, privateKeyHex);
+
+      // 4. Submit CSR to backend
+      const certData = await submitCSR(userId, csr, name);
+      console.log(certData);
+
+      if (!certData.id) {
+        throw new Error('No certId returned from server');
+      }
+
+      // 5. Save private key hex to file named with cert_id
+      await savePrivateKey(certData.id, privateKeyHex);
+
+      // 6. Copy cert ID to clipboard
+      Clipboard.setString(certData.id);
+
+      Alert.alert('Success', `Certificate registered!\nCert ID: ${certData.id}\n\n📋 Cert ID copied to clipboard!`);
+    } catch (error) {
+      if (error.response) {
+        console.error('Error status:', error.response.status);
+        console.error('Error data:', error.response.data);
+        console.error('Error headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      } else {
+        console.error('Error setting up request:', error.message);
+      }
+
+      Alert.alert('Error', error.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <LoginHeader></LoginHeader>
-        
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>Username</Text>
-          <TextInput
-            style={styles.input}
-            value={username}
-            onChangeText={setUsername}
-            placeholder="Username"
-          />
-          
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            placeholder="Password"
-          />
-          
-          <Text style={styles.label}>Confirm Password</Text>
-          <TextInput
-            style={styles.input}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-            placeholder="Confirm Password"
-          />
-          
-          <TouchableOpacity 
-            style={styles.registerButton}
-            onPress={() => navigation.navigate('Home')}
-          >
-            <Text style={styles.registerButtonText}>Register</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.cancelButton}
-            onPress={() => navigation.navigate('LoginRegister')}
-          >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.content}>
+            <LoginHeader />
+
+            <View style={styles.formContainer}>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="you@email.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+
+              <Text style={styles.label}>Name</Text>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Your Name"
+              />
+
+              <TouchableOpacity 
+                style={[styles.registerButton, loading && styles.disabledButton]} 
+                onPress={handleRegister}
+                disabled={loading}
+              >
+                <Text style={styles.registerButtonText}>
+                  {loading ? 'Registering...' : 'Register'}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.navigate('LoginRegister')}>
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -63,6 +120,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFC107',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   content: {
     flex: 1,
@@ -111,6 +174,9 @@ const styles = StyleSheet.create({
     color: '#FFC107',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  disabledButton: {
+    backgroundColor: '#666',
   },
   cancelButton: {
     alignItems: 'center',

@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android", "web"],
+  "apple": {
+    "modules": ["AddSignatureModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.addsignature.AddSignatureModule"]
+  }
+}
