@@ -23,7 +23,7 @@ import AddSignature from '../../modules/add-signature';
 import elliptic from 'elliptic';
 import Geohash from 'ngeohash';
 import { useAuth } from "../../contexts/AuthContext";
-import { SettingsModal, LOCATION_LEVELS } from '../components/settingsModal'; // Import the settings modal
+import { SettingsModal, LOCATION_LEVELS, QR_COLOR_OPTIONS } from '../components/settingsModal'; // Import the settings modal
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -37,7 +37,10 @@ const CreateScreen = ({ navigation }) => {
   
   // Settings state
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const [locationLevel, setLocationLevel] = useState(3); // Default to County level (4 characters)
+  const [locationLevel, setLocationLevel] = useState(3); // Default to index 3 (County level, 4 characters)
+  const [qrDarkColorId, setQrDarkColorId] = useState('black'); // Default to black foreground
+  const [qrLightColorId, setQrLightColorId] = useState('lightYellow'); // Default to light yellow background
+  const [qrOpacity, setQrOpacity] = useState(1.0); // Default to 100% opacity
   
   const devContentXID = '9bsv0s37pdv002seao8g'.toUpperCase();
 
@@ -60,6 +63,23 @@ const CreateScreen = ({ navigation }) => {
   const handleLocationLevelChange = (newLevel) => {
     setLocationLevel(newLevel);
     console.log(`Location precision changed to: ${LOCATION_LEVELS[newLevel].name} (${LOCATION_LEVELS[newLevel].precision} characters)`);
+  };
+
+  const handleQrDarkColorChange = (newColorId) => {
+    setQrDarkColorId(newColorId);
+    const colorOption = QR_COLOR_OPTIONS.find(c => c.id === newColorId);
+    console.log(`QR dark color changed to: ${colorOption?.name} (${colorOption?.color})`);
+  };
+
+  const handleQrLightColorChange = (newColorId) => {
+    setQrLightColorId(newColorId);
+    const colorOption = QR_COLOR_OPTIONS.find(c => c.id === newColorId);
+    console.log(`QR light color changed to: ${colorOption?.name} (${colorOption?.color})`);
+  };
+
+  const handleQrOpacityChange = (newOpacity) => {
+    setQrOpacity(newOpacity);
+    console.log(`QR opacity changed to: ${Math.round(newOpacity * 100)}%`);
   };
 
   // Validation function to check auth state
@@ -316,6 +336,9 @@ const CreateScreen = ({ navigation }) => {
         <Text style={styles.debugText}>
           Location: {LOCATION_LEVELS[locationLevel].name} ({getCurrentLocationPrecision()} chars)
         </Text>
+        <Text style={styles.debugText}>
+          QR: {QR_COLOR_OPTIONS.find(c => c.id === qrDarkColorId)?.name}/{QR_COLOR_OPTIONS.find(c => c.id === qrLightColorId)?.name} @ {Math.round(qrOpacity * 100)}%
+        </Text>
       </View>
 
       {/* Signing Modal */}
@@ -333,6 +356,12 @@ const CreateScreen = ({ navigation }) => {
         onClose={closeSettings}
         locationLevel={locationLevel}
         onLocationLevelChange={handleLocationLevelChange}
+        qrDarkColorId={qrDarkColorId}
+        onQrDarkColorChange={handleQrDarkColorChange}
+        qrLightColorId={qrLightColorId}
+        onQrLightColorChange={handleQrLightColorChange}
+        qrOpacity={qrOpacity}
+        onQrOpacityChange={handleQrOpacityChange}
       />
 
       {/* Bottom Bar */}
