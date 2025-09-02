@@ -108,7 +108,10 @@ const SettingsModal = ({ visible, onClose, locationLevel, onLocationLevelChange,
             <View style={styles.sliderContainer}>
               <Text style={styles.sliderLabel}>Privacy Level</Text>
               <View style={styles.sliderWrapper}>
-                <Text style={styles.sliderExtreme}>More Private</Text>
+                <View style={styles.sliderLabelsWrapper}>
+                  <Text style={styles.sliderExtreme}>More Private</Text>
+                  <Text style={styles.sliderExtreme}>Less Private</Text>
+                </View>
                 <Slider
                   style={styles.slider}
                   minimumValue={0}
@@ -120,7 +123,6 @@ const SettingsModal = ({ visible, onClose, locationLevel, onLocationLevelChange,
                   maximumTrackTintColor="#E5E5E5"
                   thumbStyle={styles.thumb}
                 />
-                <Text style={styles.sliderExtreme}>Less Private</Text>
               </View>
             </View>
 
@@ -239,10 +241,13 @@ const SettingsModal = ({ visible, onClose, locationLevel, onLocationLevelChange,
             <View style={styles.sliderContainer}>
               <Text style={styles.sliderLabel}>QR Code Opacity</Text>
               <View style={styles.sliderWrapper}>
-                <Text style={styles.sliderExtreme}>80%</Text>
+                <View style={styles.sliderLabelsWrapper}>
+                  <Text style={styles.sliderExtreme}>60%</Text>
+                  <Text style={styles.sliderExtreme}>100%</Text>
+                </View>
                 <Slider
                   style={styles.slider}
-                  minimumValue={0.8}
+                  minimumValue={0.6}
                   maximumValue={1.0}
                   step={0.05}
                   value={tempQrOpacity}
@@ -251,7 +256,6 @@ const SettingsModal = ({ visible, onClose, locationLevel, onLocationLevelChange,
                   maximumTrackTintColor="#E5E5E5"
                   thumbStyle={styles.thumb}
                 />
-                <Text style={styles.sliderExtreme}>100%</Text>
               </View>
               <View style={styles.opacityDisplay}>
                 <Text style={styles.currentLabel}>Current:</Text>
@@ -364,6 +368,12 @@ const styles = StyleSheet.create({
   },
   sliderWrapper: {
     alignItems: 'center',
+  },
+  sliderLabelsWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%'
   },
   slider: {
     width: width - 32,

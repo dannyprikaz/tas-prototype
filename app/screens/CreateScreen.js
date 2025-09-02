@@ -224,7 +224,12 @@ const CreateScreen = ({ navigation }) => {
             privateKeyHex,
             certId,
             devContentXID,
-            geohash.toUpperCase()
+            geohash.toUpperCase(),
+            {
+              darkColor: QR_COLOR_OPTIONS.find(c => c.id === qrDarkColorId)?.color,
+              lightColor: QR_COLOR_OPTIONS.find(c => c.id === qrLightColorId)?.color,
+              opacity: qrOpacity
+            }
           );
           
           console.log("✓ Video signing completed successfully");

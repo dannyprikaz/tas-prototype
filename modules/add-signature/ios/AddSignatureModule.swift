@@ -56,6 +56,22 @@ func base45Encode(_ data: Data) -> String {
   return output
 }
 
+// MARK: - Color Utility
+
+func hexStringToUIColor(_ hex: String) -> UIColor {
+  var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+  hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+  
+  var rgb: UInt64 = 0
+  Scanner(string: hexSanitized).scanHexInt64(&rgb)
+  
+  let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+  let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+  let blue = CGFloat(rgb & 0x0000FF) / 255.0
+  
+  return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+}
+
 // MARK: - QRPayload Definition
 
 enum QRPayload {
@@ -93,9 +109,9 @@ enum QRPayload {
   }
 }
 
-// MARK: - QR Layer Generator (Conservative Version)
+// MARK: - QR Layer Generator with Color Support
 
-func createQRLayer(from message: String, context: CIContext, position: CGPoint, size: CGSize) throws -> CALayer {
+func createQRLayer(from message: String, context: CIContext, position: CGPoint, size: CGSize, darkColor: String, lightColor: String, opacity: Double) throws -> CALayer {
   let filter = CIFilter.qrCodeGenerator()
   guard let data = message.data(using: .utf8) else {
     throw NSError(domain: "AddSignature", code: 10, userInfo: [NSLocalizedDescriptionKey: "Invalid QR message"])
@@ -108,7 +124,22 @@ func createQRLayer(from message: String, context: CIContext, position: CGPoint, 
     throw NSError(domain: "AddSignature", code: 11, userInfo: [NSLocalizedDescriptionKey: "Failed to generate QR code"])
   }
 
-  let scaled = outputImage.transformed(by: CGAffineTransform(scaleX: 10, y: 10))
+  // Apply color transformation
+  let colorFilter = CIFilter.falseColor()
+  colorFilter.inputImage = outputImage
+  
+  // Convert hex colors to CIColor
+  let darkUIColor = hexStringToUIColor(darkColor)
+  let lightUIColor = hexStringToUIColor(lightColor)
+  
+  colorFilter.color0 = CIColor(color: darkUIColor)  // Foreground (dark areas)
+  colorFilter.color1 = CIColor(color: lightUIColor) // Background (light areas)
+  
+  guard let coloredImage = colorFilter.outputImage else {
+    throw NSError(domain: "AddSignature", code: 13, userInfo: [NSLocalizedDescriptionKey: "Failed to apply QR colors"])
+  }
+
+  let scaled = coloredImage.transformed(by: CGAffineTransform(scaleX: 10, y: 10))
   guard let cgImage = context.createCGImage(scaled, from: scaled.extent) else {
     throw NSError(domain: "AddSignature", code: 12, userInfo: [NSLocalizedDescriptionKey: "Failed to render QR"])
   }
@@ -119,7 +150,7 @@ func createQRLayer(from message: String, context: CIContext, position: CGPoint, 
   layer.minificationFilter = .nearest
   layer.frame = CGRect(origin: position, size: size)
   layer.contentsGravity = .resizeAspectFill
-  layer.opacity = 0
+  layer.opacity = 0 // Will be animated
   return layer
 }
 
@@ -129,7 +160,7 @@ public class AddSignatureModule: Module {
   public func definition() -> ModuleDefinition {
     Name("AddSignature")
 
-    AsyncFunction("addQROverlayToVideo") { (videoUrl: String, startTime: Int, privateKeyHex: String, certID: String, contentID: String, geoHash: String) -> String in
+    AsyncFunction("addQROverlayToVideo") { (videoUrl: String, startTime: Int, privateKeyHex: String, certID: String, contentID: String, geoHash: String, qrSettings: [String: Any]?) -> String in
 
       print("=== AddSignature Module Called ===")
       print("videoUrl: \(videoUrl)")
@@ -138,6 +169,16 @@ public class AddSignatureModule: Module {
       print("certID: \(certID)")
       print("contentID: \(contentID)")
       print("geoHash: \(geoHash)")
+      print("qrSettings: \(qrSettings ?? [:])")
+
+      // Extract QR settings with defaults
+      let darkColorHex = qrSettings?["darkColor"] as? String ?? "#000000"
+      let lightColorHex = qrSettings?["lightColor"] as? String ?? "#ffffff"
+      let qrOpacity = qrSettings?["opacity"] as? Double ?? 1.0
+      
+      print("darkColor: \(darkColorHex)")
+      print("lightColor: \(lightColorHex)")
+      print("opacity: \(qrOpacity)")
 
       func transformedVideoSize(for track: AVAssetTrack) -> CGSize {
         let t = track.preferredTransform
@@ -154,19 +195,19 @@ public class AddSignatureModule: Module {
         let asset = AVAsset(url: url)
         print("Asset created")
 
-        guard let track = asset.tracks(withMediaType: .video).first else {
+        guard let track = asset.tracks(withMediaType: AVMediaType.video).first else {
           print("❌ No video track found")
           throw NSError(domain: "AddSignature", code: 1, userInfo: [NSLocalizedDescriptionKey: "No video track found"])
         }
         print("✓ Video track found")
 
         let composition = AVMutableComposition()
-        let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let videoTrack = composition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
         try videoTrack?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: track, at: .zero)
         print("✓ Video track added to composition")
 
-        if let audioTrack = asset.tracks(withMediaType: .audio).first {
-          let audioComp = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        if let audioTrack = asset.tracks(withMediaType: AVMediaType.audio).first {
+          let audioComp = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
           try audioComp?.insertTimeRange(CMTimeRange(start: .zero, duration: asset.duration), of: audioTrack, at: .zero)
           print("✓ Audio track added to composition")
         }
@@ -197,6 +238,7 @@ public class AddSignatureModule: Module {
         let duration = Int(CMTimeGetSeconds(asset.duration))
         let frames = duration / interval + 1
         print("Duration: \(duration)s, Frames: \(frames), Interval: \(interval)s")
+        print("QR Colors: Dark=\(darkColorHex), Light=\(lightColorHex), Opacity=\(qrOpacity)")
         
         // Limit frames for very long videos to prevent crashes
         let maxFrames = 200 // Limit to ~10 minutes max
@@ -231,28 +273,40 @@ public class AddSignatureModule: Module {
               from: try QRPayload.timeBased(time: currentTime, signer: privateKey).generateMessage(),
               context: context,
               position: CGPoint(x: 20, y: 20 + qrSize.height),
-              size: qrSize
+              size: qrSize,
+              darkColor: darkColorHex,
+              lightColor: lightColorHex,
+              opacity: qrOpacity
             )
               
             let topCenter = try createQRLayer(
               from: try QRPayload.contentBased(contentID: contentID, time: currentTime, signer: privateKey).generateMessage(),
               context: context,
               position: CGPoint(x: 20 + qrSize.width, y: 20 + qrSize.height),
-              size: qrSize
+              size: qrSize,
+              darkColor: darkColorHex,
+              lightColor: lightColorHex,
+              opacity: qrOpacity
             )
               
             let topRight = try createQRLayer(
               from: try QRPayload.locationBased(geoHash: geoHash, time: currentTime, signer: privateKey).generateMessage(),
               context: context,
               position: CGPoint(x: 20 + 2 * qrSize.width, y: 20 + qrSize.height),
-              size: qrSize
+              size: qrSize,
+              darkColor: darkColorHex,
+              lightColor: lightColorHex,
+              opacity: qrOpacity
             )
 
             let bottom = try createQRLayer(
               from: try QRPayload.certBased(certID: certID, time: currentTime, signer: privateKey).generateMessage(),
               context: context,
               position: CGPoint(x: 20 + qrSize.width, y: 20),
-              size: qrSize
+              size: qrSize,
+              darkColor: darkColorHex,
+              lightColor: lightColorHex,
+              opacity: qrOpacity
             )
 
             [topLeft, topCenter, topRight, bottom].forEach { layer in
@@ -261,11 +315,22 @@ public class AddSignatureModule: Module {
 
             let beginTime = CFTimeInterval(i * interval)
             [topLeft, topCenter, topRight, bottom].forEach { layer in
-              let anim = CAKeyframeAnimation(keyPath: "opacity")
-              anim.values = [0, 1, 1, 0]
-              anim.keyTimes = [0, 0.01, 0.99, 1]
-              anim.duration = CFTimeInterval(actualFrames * interval)
-              anim.beginTime = AVCoreAnimationBeginTimeAtZero + beginTime
+                let anim = CAKeyframeAnimation(keyPath: "opacity")
+                // Apply the user's opacity setting to the animation
+                let maxOpacity = Float(qrOpacity)
+                let timeMargin = Double(interval) * 0.01
+                anim.duration = CFTimeInterval(interval)
+                anim.beginTime = AVCoreAnimationBeginTimeAtZero + beginTime
+                if i == 0 {
+                    anim.values = [maxOpacity, maxOpacity, 0]
+                    anim.keyTimes = [0, 0.99, 1]
+                    anim.duration += timeMargin
+                } else {
+                    anim.values = [0, maxOpacity, maxOpacity, 0]
+                    anim.keyTimes = [0, 0.01, 0.99, 1]
+                    anim.duration += timeMargin * 2
+                    anim.beginTime -= timeMargin
+                }
               anim.fillMode = .forwards
               anim.isRemovedOnCompletion = false
               layer.add(anim, forKey: "opacityAnimation_\(i)")
@@ -303,14 +368,14 @@ public class AddSignatureModule: Module {
         
         print("Starting export...")
 
-        return try await withCheckedThrowingContinuation { cont in
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
           exporter.exportAsynchronously {
             if let error = exporter.error {
               print("❌ Export failed: \(error)")
-              cont.resume(throwing: error)
+              continuation.resume(throwing: error)
             } else {
               print("✓ Export completed successfully")
-              cont.resume(returning: outputURL.path)
+              continuation.resume(returning: outputURL.path)
             }
           }
         }
