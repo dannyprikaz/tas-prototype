@@ -256,8 +256,9 @@ public class AddSignatureModule: Module {
         parentLayer.frame = CGRect(origin: .zero, size: videoSize)
         videoLayer.frame = CGRect(origin: .zero, size: videoSize)
         parentLayer.addSublayer(videoLayer)
+          let shorterDimension = min(videoSize.width, videoSize.height)
 
-        let qrSize = CGSize(width: videoSize.width * 0.1, height: videoSize.width * 0.1)
+        let qrSize = CGSize(width: shorterDimension * 0.1, height: shorterDimension * 0.1)
         print("QR size: \(qrSize)")
 
         print("Generating QR layers...")

@@ -23,7 +23,13 @@ import AddSignature from '../../modules/add-signature';
 import elliptic from 'elliptic';
 import Geohash from 'ngeohash';
 import { useAuth } from "../../contexts/AuthContext";
-import { SettingsModal, LOCATION_LEVELS, QR_COLOR_OPTIONS } from '../components/settingsModal'; // Import the settings modal
+import { SettingsModal, LOCATION_LEVELS, QR_COLOR_OPTIONS } from '../components/settingsModal';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { 
+  useSharedValue,
+  useAnimatedStyle,
+  runOnJS
+} from 'react-native-reanimated';
 
 const CreateScreen = ({ navigation }) => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -34,6 +40,13 @@ const CreateScreen = ({ navigation }) => {
   const [facing, setFacing] = useState("back");
   const [recording, setRecording] = useState(false);
   const [signing, setSigning] = useState(false);
+  const [zoom, setZoom] = useState(0);
+  
+    // Camera refs and gesture values
+    const cameraRef = useRef(null);
+    const scale = useSharedValue(1);
+    const savedScale = useSharedValue(1);
+  
   
   // Settings state
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -128,6 +141,28 @@ const CreateScreen = ({ navigation }) => {
   if (!permission) {
     return null;
   }
+  
+    // Create pinch gesture
+    const pinchGesture = Gesture.Pinch()
+      .onStart(() => {
+        'worklet';
+      })
+      .onUpdate((e) => {
+        'worklet';
+        // Calculate new scale with bounds (1x to 3x)
+        const newScale = Math.max(1, Math.min(savedScale.value * e.scale, 3));
+        scale.value = newScale;
+        
+        // Convert scale (1-3) to zoom (0-1) for CameraView
+        const zoomValue = Math.max(0, Math.min((newScale - 1) / 2, 1));
+        
+        // Update zoom state
+        runOnJS(setZoom)(zoomValue);
+      })
+      .onEnd(() => {
+        'worklet';
+        savedScale.value = scale.value;
+      });
 
   if (!permission.granted) {
     return (
@@ -314,14 +349,17 @@ const CreateScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <CameraView
-        style={StyleSheet.absoluteFill}
-        ref={ref}
-        mode={mode}
-        facing={facing}
-        mute={false}
-        responsiveOrientationWhenOrientationLocked
-      />
+      <GestureDetector gesture={pinchGesture}>
+        <CameraView
+          style={StyleSheet.absoluteFill}
+          ref={ref}
+          mode={mode}
+          facing={facing}
+          mute={false}
+          zoom={zoom}
+          responsiveOrientationWhenOrientationLocked
+        />
+      </GestureDetector>
       
       {/* Top Bar */}
       <SafeAreaView style={styles.topControls}>
