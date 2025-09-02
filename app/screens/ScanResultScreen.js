@@ -8,6 +8,7 @@ import * as Location from "expo-location";
 import Geohash from 'ngeohash';
 import { authenticateSignature } from '../../services/signatureAuthService';
 import { getCert } from '../../services/certService';
+import { getContinentFromGeohash } from '../../utils/continentMapping';
 
 const ScanResultScreen = ({ navigation, route }) => {
   const [isValid, setIsValid] = useState(null);
@@ -74,12 +75,15 @@ const ScanResultScreen = ({ navigation, route }) => {
     validate();
   }, [qrData]);
 
-  const getLocationDisplayForPrecision = (precision, locationData) => {
+  const getLocationDisplayForPrecision = (precision, locationData, geohash) => {
     if (!locationData) return null;
 
     switch (precision) {
       case 1: // Continent level
-        return locationData.country || 'Unknown Region';
+        const continent = getContinentFromGeohash(geohash);
+        console.log(locationData);
+        console.log(locationData.country);
+        return continent !== 'Unknown' ? continent : (locationData.country || 'Unknown Region');
       case 2: // Country level  
         return locationData.country || 'Unknown Country';
       case 3: // State level
@@ -132,7 +136,7 @@ const ScanResultScreen = ({ navigation, route }) => {
           const locationData = results[0];
           
           // Get appropriate display text based on precision
-          const displayText = getLocationDisplayForPrecision(precision, locationData);
+          const displayText = getLocationDisplayForPrecision(precision, locationData, gh);
           
           setPlace({
             displayText,
