@@ -1,15 +1,53 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, Alert, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  View, 
+  StyleSheet, 
+  TextInput, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  Alert, 
+  KeyboardAvoidingView, 
+  ScrollView, 
+  Platform,
+  Keyboard,
+  Dimensions
+} from 'react-native';
 import LoginHeader from '../components/loginHeader';
 import Text from '../components/text';
 import { hasPrivateKey, loadPrivateKey } from '../../services/privateKeyService';
 import { checkCert } from '../../services/certService';
-import { useAuth } from '../../contexts/AuthContext'; // Adjust path as needed
+import { useAuth } from '../../contexts/AuthContext';
+
+const { height: screenHeight } = Dimensions.get('window');
 
 const LoginScreen = ({ navigation }) => {
   const [certId, setCertId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const { login } = useAuth();
+  const inputRef = useRef(null);
+
+  // Keyboard listeners
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    
+    const keyboardWillHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener?.remove();
+      keyboardWillHideListener?.remove();
+    };
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -47,8 +85,18 @@ const LoginScreen = ({ navigation }) => {
       // 4. Set global authentication state
       login(certId.trim(), privateKeyHex);
 
-      // 5. Navigate to Home screen
-      navigation.navigate('Home');
+      // 5. IMPORTANT: Signal successful login to iOS for autofill
+      if (Platform.OS === 'ios' && inputRef.current) {
+        // Blur the input to trigger iOS "save password" prompt
+        inputRef.current.blur();
+        
+        // Small delay to let iOS process the successful login
+        setTimeout(() => {
+          navigation.navigate('Home');
+        }, 100);
+      } else {
+        navigation.navigate('Home');
+      }
 
     } catch (error) {
       console.error('Login error:', error);
@@ -77,12 +125,16 @@ const LoginScreen = ({ navigation }) => {
       <KeyboardAvoidingView 
         style={styles.keyboardAvoidingView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
       >
         <ScrollView 
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            keyboardVisible && styles.scrollContentKeyboard
+          ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
         >
           <View style={styles.content}>
             <LoginHeader />
@@ -90,12 +142,22 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.formContainer}>
               <Text style={styles.label}>Certificate ID</Text>
               <TextInput
+                ref={inputRef}
                 style={styles.input}
                 value={certId}
                 onChangeText={setCertId}
                 placeholder="Enter your Certificate ID"
                 autoCapitalize="characters"
                 autoCorrect={false}
+                // Enhanced iOS autofill integration
+                textContentType="username"
+                autoComplete="username"
+                passwordRules=""
+                keyboardType="default"
+                returnKeyType="done"
+                blurOnSubmit={false} // Changed to false so we control when to blur
+                enablesReturnKeyAutomatically={true}
+                onSubmitEditing={handleLogin} // Allow login via return key
               />
               
               <TouchableOpacity 
@@ -132,11 +194,14 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: 'flex-start',
+  },
+  scrollContentKeyboard: {
+    paddingBottom: 50, // Only add padding when keyboard is visible
   },
   content: {
     flex: 1,
     padding: 20,
-    justifyContent: 'flex-start',
   },
   formContainer: {
     marginTop: 10,
@@ -144,21 +209,25 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 3,
+    marginBottom: 8,
+    color: '#333',
   },
   input: {
     backgroundColor: 'white',
     paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 15,
+    paddingVertical: 12,
+    borderRadius: 8,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 20,
   },
   loginButton: {
     backgroundColor: '#000',
-    paddingVertical: 12,
-    borderRadius: 5,
+    paddingVertical: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   loginButtonText: {
     color: '#FFC107',
@@ -170,9 +239,11 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     alignItems: 'center',
+    paddingVertical: 10,
   },
   cancelButtonText: {
     fontSize: 16,
+    color: '#333',
   },
 });
 
