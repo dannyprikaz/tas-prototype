@@ -1,0 +1,69 @@
+export default ({ config }) => {
+  const isDevBuild = process.env.APP_VARIANT === 'development';
+  
+  return {
+    expo: {
+      name: isDevBuild ? "TAS Prototype (Dev)" : "TAS Prototype",
+      slug: "tas-prototype",
+      version: "1.0.0",
+      orientation: "portrait",
+      icon: "./assets/images/icon.png",
+      scheme: isDevBuild ? "myapp-dev" : "myapp",
+      userInterfaceStyle: "automatic",
+      newArchEnabled: true,
+      ios: {
+        supportsTablet: true,
+        bundleIdentifier: "com.dannyprikaz.tasprototype"
+      },
+      android: {
+        adaptiveIcon: {
+          foregroundImage: "./assets/images/adaptive-icon.png",
+          backgroundColor: "#ffffff"
+        },
+        package: isDevBuild 
+          ? "com.dannyprikaz.tasprototype.dev"
+          : "com.dannyprikaz.tasprototype",
+        permissions: [
+          "android.permission.ACCESS_COARSE_LOCATION",
+          "android.permission.ACCESS_FINE_LOCATION"
+        ]
+      },
+      web: {
+        bundler: "metro",
+        output: "static",
+        favicon: "./assets/images/favicon.png"
+      },
+      plugins: [
+        "expo-router",
+        [
+          "expo-splash-screen",
+          {
+            image: "./assets/images/splash-icon.png",
+            imageWidth: 200,
+            resizeMode: "contain",
+            backgroundColor: "#ffffff"
+          }
+        ],
+        [
+          "expo-location",
+          {
+            locationAlwaysAndWhenInUsePermission: "Allow $(PRODUCT_NAME) to use your location.",
+            locationWhenInUsePermission: "Allow $(PRODUCT_NAME) to use your location when in use."
+          }
+        ],
+        "expo-font",
+        "expo-web-browser",
+        "./modules/screen-qr-module/plugin"
+      ],
+      experiments: {
+        typedRoutes: true
+      },
+      extra: {
+        router: {},
+        eas: {
+          projectId: "b1cf3c50-4c6e-4657-9a5b-0316d601fe32"
+        }
+      }
+    }
+  };
+};
