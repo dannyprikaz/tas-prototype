@@ -77,42 +77,49 @@ const ScanScreen = ({ navigation }) => {
     };
   }, [navigation]);
 
-  // Handle QR code scanning
+  // Handle QR code scanning with NEW FORMAT (no delimiters)
   const handleBarcodeScanned = ({ type, data }) => {
     if (isProcessing) return;
     
-    // Check if this QR code contains one of our expected prefixes
-    const hasValidPrefix = data.startsWith('T:') || 
+    // Check if this QR code contains one of our expected prefixes (NEW FORMAT)
+    // New format: T{timestamp}, I{certID}, C{contentID}, L{len}{geohash}
+    const prefix = data.charAt(0);
+    const hasValidPrefix = prefix === 'T' || prefix === 'I' || prefix === 'C' || prefix === 'L';
+    
+    if (!hasValidPrefix) {
+      // Also check for old format for backward compatibility
+      const hasOldFormat = data.startsWith('T:') || 
                           data.startsWith('U:') || 
                           data.startsWith('C:') || 
                           data.startsWith('L:');
-    
-    if (!hasValidPrefix) return;
+      if (!hasOldFormat) return;
+    }
 
     // Add to current frame messages (similar to iOS logic)
     if (!currentFrameMessagesRef.current.includes(data)) {
       currentFrameMessagesRef.current.push(data);
     }
 
-    // Track prefixes
-    if (data.startsWith('T:')) {
-      seenPrefixesRef.current.add('T:');
-    } else if (data.startsWith('U:')) {
-      seenPrefixesRef.current.add('U:');
-    } else if (data.startsWith('C:')) {
-      seenPrefixesRef.current.add('C:');
-    } else if (data.startsWith('L:')) {
-      seenPrefixesRef.current.add('L:');
-    }
+    // Track prefixes (handle both old and new formats)
+    const detectedPrefix = data.startsWith('T:') ? 'T' :
+                          data.startsWith('U:') ? 'I' : // Old 'U' maps to new 'I'
+                          data.startsWith('C:') ? 'C' :
+                          data.startsWith('L:') ? 'L' :
+                          data.charAt(0); // New format just uses first char
+
+    seenPrefixesRef.current.add(detectedPrefix);
 
     // Update state for UI updates
     setDetectedPrefixes(new Set(seenPrefixesRef.current));
     setDetectedQRs(new Set([...detectedQRs, data]));
     
+    console.log(`📱 Detected QR: ${prefix}, Total prefixes: ${seenPrefixesRef.current.size}/4`);
+    
     // Check if we have all 4 required prefixes
     if (seenPrefixesRef.current.size === 4) {
       setIsProcessing(true);
       console.log('✅ All 4 QR codes detected, navigating...');
+      console.log('QR Data:', currentFrameMessagesRef.current);
       
       // Navigate to results with all detected messages
       setTimeout(() => {
@@ -220,10 +227,10 @@ const ScanScreen = ({ navigation }) => {
                   <Text style={styles.detectionText}>
                     Detected: {detectedPrefixes.size}/4 QR codes
                   </Text>
-                  {detectedPrefixes.has('T:') && <Text style={styles.foundText}>✅ Time</Text>}
-                  {detectedPrefixes.has('U:') && <Text style={styles.foundText}>✅ User</Text>}
-                  {detectedPrefixes.has('C:') && <Text style={styles.foundText}>✅ Content</Text>}
-                  {detectedPrefixes.has('L:') && <Text style={styles.foundText}>✅ Location</Text>}
+                  {detectedPrefixes.has('T') && <Text style={styles.foundText}>✅ Time</Text>}
+                  {detectedPrefixes.has('I') && <Text style={styles.foundText}>✅ Identity</Text>}
+                  {detectedPrefixes.has('C') && <Text style={styles.foundText}>✅ Content</Text>}
+                  {detectedPrefixes.has('L') && <Text style={styles.foundText}>✅ Location</Text>}
                 </View>
                 </View>
     </SafeAreaView>

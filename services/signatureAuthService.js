@@ -73,64 +73,174 @@ function parseRawSignature(sig) {
   return { r, s };
 }
 
-
 const ec = new elliptic.ec("p256");
 
 export const authenticateSignature = async (rawSignatureArray) => {
-    try {
-    console.log('Called authenticateSignature');
-  const parsed = parseSignature(rawSignatureArray);
-  const cert = await getCert(parsed.U.message); // U.message is the cert ID
+  try {
+    console.log('Called authenticateSignature with fragment-based verification');
+    
+    // Parse all 4 QR codes
+    const parsed = parseSignatureFragments(rawSignatureArray);
+    
+    // Verify we have all 4 fragments
+    if (!parsed.T || !parsed.I || !parsed.C || !parsed.L) {
+      throw new Error("Missing one or more QR codes (T, I, C, L required)");
+    }
+    
+    // Get certificate using Identity cert ID
+    const cert = await getCert(parsed.I.data);
+    
+    if (!cert || !cert.certificate) {
+      throw new Error("Certificate not found or invalid.");
+    }
 
-  if (!cert || !cert.certificate) {
-    throw new Error("Certificate not found or invalid.");
-  }
+    // Extract public key from certificate
+    const publicKey = extractPublicKeyFromPEM(cert.certificate);
+    console.log(`Public Key: ${publicKey}`);
+    const key = ec.keyFromPublic(publicKey, "hex");
 
-  // Decode PEM certificate to extract public key
-  const publicKey = extractPublicKeyFromPEM(cert.certificate);
-  console.log(`publicKey: ${publicKey}`);
-  const key = ec.keyFromPublic(publicKey, "hex");
-
-  const time = parsed.T.message;
-
-  // Compose signed messages
-  const messages = {
-    T: parsed.T.message,
-    U: parsed.U.message + time,
-    C: parsed.C.message + time,
-    L: parsed.L.message + time,
-  };
-
-  // Verify each signature
-  for (const prefix of ["T", "U", "C", "L"]) {
-    console.log(`Verifying ${prefix}`);
-    const signatureBytes = Buffer.from(customBase45Decode(parsed[prefix].signature));
-
+    // Reconstruct the full signature from 4 fragments
+    const fullSignatureBase45 = 
+      parsed.T.signatureFragment +
+      parsed.I.signatureFragment +
+      parsed.C.signatureFragment +
+      parsed.L.signatureFragment;
+    
+    console.log(`Reconstructed signature (Base45): ${fullSignatureBase45}`);
+    console.log(`Signature length: ${fullSignatureBase45.length} chars`);
+    
+    // Decode the full signature
+    const signatureBytes = Buffer.from(customBase45Decode(fullSignatureBase45));
+    console.log(`Decoded signature length: ${signatureBytes.length} bytes`);
+    
+    if (signatureBytes.length !== 64) {
+      throw new Error(`Invalid signature length: ${signatureBytes.length} bytes (expected 64)`);
+    }
     
     const sigObject = parseRawSignature(signatureBytes);
 
-    const msgHash = createHash("sha256").update(messages[prefix]).digest();
+    // Compose the message that was signed (all 4 data pieces concatenated)
+    const compositeMessage = parsed.T.data + parsed.I.data + parsed.C.data + parsed.L.data;
+    console.log(`Composite message: ${compositeMessage}`);
+    
+    // Hash the composite message
+    const msgHash = createHash("sha256").update(compositeMessage).digest();
+    console.log(`Message hash: ${msgHash.toString('hex')}`);
+    
+    // Verify the signature
     const isValid = key.verify(msgHash, sigObject);
+    
     if (!isValid) {
-      console.log(`Invalid signature for ${prefix}`);
-      console.log(`Message (${prefix}):`, messages[prefix]);
-      console.log(`Hash (${prefix}):`, msgHash.toString('hex'));
-      console.log(`${prefix} Base45-encoded signature:`, parsed[prefix].signature);
-      console.log(`${prefix} Decoded signature length:`, signatureBytes.length);
-      console.log(`Signature (${prefix}):`, sigObject);
+      console.log('❌ Signature verification failed');
+      console.log('Debug info:');
+      console.log('- T data:', parsed.T.data);
+      console.log('- I data:', parsed.I.data);
+      console.log('- C data:', parsed.C.data);
+      console.log('- L data:', parsed.L.data);
+      console.log('- Signature object:', sigObject);
       return false;
-    } else {
-        console.log(`Verified ${prefix}`);
     }
-  }
-
-  return true;
-    } catch (err) {
+    
+    console.log('✅ Signature verified successfully');
+    return true;
+    
+  } catch (err) {
     console.error('Error in authenticateSignature:', err);
     throw err;
   }
 };
 
+/**
+ * Parse QR codes with signature fragments
+ * New format (no delimiters):
+ * - T{timestamp}{fragment}          e.g., T1709654400ABCD...
+ * - I{certID}{fragment}             e.g., IC9HV8RN9P0H0001EFGH...
+ * - C{contentID}{fragment}          e.g., CC9HV8RN9P0H0002IJKL...
+ * - L{len}{geohash}{fragment}       e.g., L69Q5CTRMNOP...
+ */
+export const parseSignatureFragments = (rawArray) => {
+  const parsed = {
+    T: null,
+    I: null,
+    C: null,
+    L: null,
+  };
+
+  rawArray.forEach((item) => {
+    if (!item || item.length < 2) {
+      console.warn("Malformed QR item (too short):", item);
+      return;
+    }
+
+    const prefix = item[0];
+
+    try {
+      switch (prefix) {
+        case 'T': {
+          // T{timestamp}{fragment}
+          // Timestamp is always 10 digits
+          const data = item.substring(1, 11);
+          const signatureFragment = item.substring(11);
+          
+          parsed.T = { data, signatureFragment };
+          console.log(`Parsed T: timestamp=${data}, fragment length=${signatureFragment.length}`);
+          break;
+        }
+        
+        case 'I': {
+          // I{certID}{fragment}
+          // Cert ID (XID) is always 20 characters
+          const data = item.substring(1, 21);
+          const signatureFragment = item.substring(21);
+          
+          parsed.I = { data, signatureFragment };
+          console.log(`Parsed I: certID=${data}, fragment length=${signatureFragment.length}`);
+          break;
+        }
+        
+        case 'C': {
+          // C{contentID}{fragment}
+          // Content ID (XID) is always 20 characters
+          const data = item.substring(1, 21);
+          const signatureFragment = item.substring(21);
+          
+          parsed.C = { data, signatureFragment };
+          console.log(`Parsed C: contentID=${data}, fragment length=${signatureFragment.length}`);
+          break;
+        }
+        
+        case 'L': {
+          // L{len}{geohash}{fragment}
+          // Length indicator is 1 digit (1-8)
+          const geohashLength = parseInt(item[1], 10);
+          
+          if (isNaN(geohashLength) || geohashLength < 1 || geohashLength > 8) {
+            throw new Error(`Invalid geohash length: ${item[1]}`);
+          }
+          
+          const data = item.substring(2, 2 + geohashLength);
+          const signatureFragment = item.substring(2 + geohashLength);
+          
+          parsed.L = { data, signatureFragment, geohashLength };
+          console.log(`Parsed L: geohash=${data} (length=${geohashLength}), fragment length=${signatureFragment.length}`);
+          break;
+        }
+        
+        default:
+          console.warn("Unknown prefix in QR data:", prefix);
+      }
+    } catch (err) {
+      console.error(`Error parsing QR code with prefix ${prefix}:`, err);
+    }
+  });
+
+  return parsed;
+};
+
+/**
+ * Legacy parser for old format with colons (for backward compatibility)
+ * Old format: T:1709654400:MEUCIQD+7...
+ */
 export const parseSignature = (rawArray) => {
   const parsed = {
     T: { message: 'Unknown', signature: 'Unknown' },

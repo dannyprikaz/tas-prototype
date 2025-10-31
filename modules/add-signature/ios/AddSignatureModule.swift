@@ -72,40 +72,94 @@ func hexStringToUIColor(_ hex: String) -> UIColor {
   return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
 }
 
-// MARK: - QRPayload Definition
+// MARK: - Signature Fragment Generator
 
-enum QRPayload {
-  case timeBased(time: Int, signer: P256.Signing.PrivateKey)
-  case certBased(certID: String, time: Int, signer: P256.Signing.PrivateKey)
-  case contentBased(contentID: String, time: Int, signer: P256.Signing.PrivateKey)
-  case locationBased(geoHash: String, time: Int, signer: P256.Signing.PrivateKey)
-
-  func generateMessage() throws -> String {
-    switch self {
-    case .timeBased(let time, let signer):
-        let msg = String(time).uppercased()
-      let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
-      let encoded = base45Encode(signature)
-      return "T:\(time):\(encoded)"
-
-    case .certBased(let certID, let time, let signer):
-        let msg = "\(certID)\(time)".uppercased()
-      let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
-      let encoded = base45Encode(signature)
-      return "U:\(certID.uppercased()):\(encoded)"
-        
-    case .contentBased(let contentID, let time, let signer):
-        let msg = "\(contentID)\(time)".uppercased()
-      let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
-      let encoded = base45Encode(signature)
-      return "C:\(contentID.uppercased()):\(encoded)"
-        
-    case .locationBased(let geoHash, let time, let signer):
-        let msg = "\(geoHash)\(time)".uppercased()
-      let signature = try signer.signature(for: msg.data(using: .utf8)!).rawRepresentation
-      let encoded = base45Encode(signature)
-      return "L:\(geoHash.uppercased()):\(encoded)"
+struct SignatureFragments {
+  let timeQR: String
+  let identityQR: String
+  let contentQR: String
+  let locationQR: String
+  
+  static func generate(
+    timestamp: Int,
+    certID: String,
+    contentID: String,
+    geoHash: String,
+    signer: P256.Signing.PrivateKey
+  ) throws -> SignatureFragments {
+    
+    // Ensure all IDs and geohashes are uppercase for alphanumeric mode
+    let certIDUpper = certID.uppercased()
+    let contentIDUpper = contentID.uppercased()
+    let geoHashUpper = geoHash.uppercased()
+    let timestampStr = String(timestamp)
+    
+    // STEP 1: Create composite message (concatenate all 4 data pieces)
+    let compositeMessage = timestampStr + certIDUpper + contentIDUpper + geoHashUpper
+    
+    print("📝 Composite message: \(compositeMessage)")
+    print("   - Timestamp: \(timestampStr)")
+    print("   - Cert ID: \(certIDUpper)")
+    print("   - Content ID: \(contentIDUpper)")
+    print("   - Geohash: \(geoHashUpper)")
+    
+    // STEP 2: Sign the composite message (single signature for all 4)
+    guard let messageData = compositeMessage.data(using: .utf8) else {
+      throw NSError(domain: "AddSignature", code: 5, userInfo: [
+        NSLocalizedDescriptionKey: "Failed to encode composite message"
+      ])
     }
+    
+    let signature = try signer.signature(for: SHA256.hash(data: messageData))
+    let signatureData = signature.rawRepresentation // 64 bytes
+    
+    // STEP 3: Encode signature as Base45
+    let signatureBase45 = base45Encode(signatureData)
+    print("🔐 Signature (Base45): \(signatureBase45)")
+    print("   Length: \(signatureBase45.count) characters")
+    
+    // STEP 4: Split signature into 4 fragments
+    // 93 chars / 4 = 23.25, so split as: 24, 23, 23, 23
+    let fragmentSizes = [24, 23, 23, 23]
+    var fragments: [String] = []
+    var currentIndex = signatureBase45.startIndex
+    
+    for size in fragmentSizes {
+      let endIndex = signatureBase45.index(currentIndex, offsetBy: size, limitedBy: signatureBase45.endIndex) ?? signatureBase45.endIndex
+      fragments.append(String(signatureBase45[currentIndex..<endIndex]))
+      currentIndex = endIndex
+    }
+    
+    // Handle any remaining characters (should be 0, but just in case)
+    if currentIndex < signatureBase45.endIndex {
+      fragments[3] += String(signatureBase45[currentIndex...])
+    }
+    
+    print("✂️ Signature fragments:")
+    for (i, fragment) in fragments.enumerated() {
+      print("   Fragment \(i+1): \(fragment.count) chars")
+    }
+    
+    // STEP 5: Build QR code strings (no delimiters!)
+    let geohashLength = String(geoHashUpper.count)
+    
+    let timeQR = "T" + timestampStr + fragments[0]
+    let identityQR = "I" + certIDUpper + fragments[1]
+    let contentQR = "C" + contentIDUpper + fragments[2]
+    let locationQR = "L" + geohashLength + geoHashUpper + fragments[3]
+    
+    print("📱 QR code strings:")
+    print("   Time: \(timeQR.count) chars - \(timeQR.prefix(20))...")
+    print("   Identity: \(identityQR.count) chars - \(identityQR.prefix(20))...")
+    print("   Content: \(contentQR.count) chars - \(contentQR.prefix(20))...")
+    print("   Location: \(locationQR.count) chars - \(locationQR.prefix(20))...")
+    
+    return SignatureFragments(
+      timeQR: timeQR,
+      identityQR: identityQR,
+      contentQR: contentQR,
+      locationQR: locationQR
+    )
   }
 }
 
@@ -162,7 +216,7 @@ public class AddSignatureModule: Module {
 
     AsyncFunction("addQROverlayToVideo") { (videoUrl: String, startTime: Int, privateKeyHex: String, certID: String, contentID: String, geoHash: String, qrSettings: [String: Any]?) -> String in
 
-      print("=== AddSignature Module Called ===")
+      print("=== AddSignature Module Called (Signature Fragment Mode) ===")
       print("videoUrl: \(videoUrl)")
       print("startTime: \(startTime)")
       print("privateKeyHex length: \(privateKeyHex.count)")
@@ -256,12 +310,12 @@ public class AddSignatureModule: Module {
         parentLayer.frame = CGRect(origin: .zero, size: videoSize)
         videoLayer.frame = CGRect(origin: .zero, size: videoSize)
         parentLayer.addSublayer(videoLayer)
-          let shorterDimension = min(videoSize.width, videoSize.height)
+        let shorterDimension = min(videoSize.width, videoSize.height)
 
         let qrSize = CGSize(width: shorterDimension * 0.1, height: shorterDimension * 0.1)
         print("QR size: \(qrSize)")
 
-        print("Generating QR layers...")
+        print("Generating QR layers with signature fragments...")
         for i in 0..<actualFrames {
           let currentTime = startTime + i * interval
           
@@ -270,8 +324,18 @@ public class AddSignatureModule: Module {
           }
 
           do {
+            // Generate signature fragments for this timestamp
+            let fragments = try SignatureFragments.generate(
+              timestamp: currentTime,
+              certID: certID,
+              contentID: contentID,
+              geoHash: geoHash,
+              signer: privateKey
+            )
+            
+            // Create QR layers using the fragment-based messages
             let topLeft = try createQRLayer(
-              from: try QRPayload.timeBased(time: currentTime, signer: privateKey).generateMessage(),
+              from: fragments.timeQR,
               context: context,
               position: CGPoint(x: 20, y: 20 + qrSize.height),
               size: qrSize,
@@ -281,7 +345,7 @@ public class AddSignatureModule: Module {
             )
               
             let topCenter = try createQRLayer(
-              from: try QRPayload.contentBased(contentID: contentID, time: currentTime, signer: privateKey).generateMessage(),
+              from: fragments.contentQR,
               context: context,
               position: CGPoint(x: 20 + qrSize.width, y: 20 + qrSize.height),
               size: qrSize,
@@ -291,7 +355,7 @@ public class AddSignatureModule: Module {
             )
               
             let topRight = try createQRLayer(
-              from: try QRPayload.locationBased(geoHash: geoHash, time: currentTime, signer: privateKey).generateMessage(),
+              from: fragments.locationQR,
               context: context,
               position: CGPoint(x: 20 + 2 * qrSize.width, y: 20 + qrSize.height),
               size: qrSize,
@@ -301,7 +365,7 @@ public class AddSignatureModule: Module {
             )
 
             let bottom = try createQRLayer(
-              from: try QRPayload.certBased(certID: certID, time: currentTime, signer: privateKey).generateMessage(),
+              from: fragments.identityQR,
               context: context,
               position: CGPoint(x: 20 + qrSize.width, y: 20),
               size: qrSize,

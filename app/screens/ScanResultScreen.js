@@ -6,7 +6,7 @@ import Header from '../components/header';
 import BottomNav from '../components/bottomNav';
 import * as Location from "expo-location";
 import Geohash from 'ngeohash';
-import { authenticateSignature } from '../../services/signatureAuthService';
+import { authenticateSignature, parseSignatureFragments } from '../../services/signatureAuthService';
 import { getCert } from '../../services/certService';
 import { getContinentFromGeohash } from '../../utils/continentMapping';
 
@@ -15,6 +15,14 @@ const ScanResultScreen = ({ navigation, route }) => {
   const [place, setPlace] = useState(null);
   const [commonName, setCommonName] = useState(null);
 
+  /**
+   * Parse QR data from new format (no delimiters)
+   * Format:
+   * - T{timestamp}{fragment}
+   * - I{certID}{fragment}
+   * - C{contentID}{fragment}
+   * - L{len}{geohash}{fragment}
+   */
   const parseQRData = (rawArray) => {
     const parsed = {
       who: 'Unknown',
@@ -23,29 +31,35 @@ const ScanResultScreen = ({ navigation, route }) => {
       when: 'Unknown',
     };
 
-    rawArray.forEach(item => {
-      const [prefix, value, signature] = item.split(':');
-      if (!prefix || !value) return;
-
-      switch (prefix) {
-        case 'T':
-          // Treat value as UNIX timestamp
-          const ts = parseInt(value, 10);
-          parsed.when = isNaN(ts)
-            ? value
-            : new Date(ts * 1000).toLocaleString(); // Convert to readable time
-          break;
-        case 'L':
-          parsed.where = value;
-          break;
-        case 'U':
-          parsed.who = value;
-          break;
-        case 'C':
-          parsed.what = value.slice(0, 8);
-          break;
+    try {
+      const fragments = parseSignatureFragments(rawArray);
+      
+      // Time (T)
+      if (fragments.T?.data) {
+        const ts = parseInt(fragments.T.data, 10);
+        parsed.when = isNaN(ts)
+          ? fragments.T.data
+          : new Date(ts * 1000).toLocaleString();
       }
-    });
+      
+      // Identity (I) - certificate ID
+      if (fragments.I?.data) {
+        parsed.who = fragments.I.data;
+      }
+      
+      // Content (C) - content ID
+      if (fragments.C?.data) {
+        parsed.what = fragments.C.data.slice(0, 8);
+      }
+      
+      // Location (L) - geohash
+      if (fragments.L?.data) {
+        parsed.where = fragments.L.data;
+      }
+      
+    } catch (err) {
+      console.error("Error parsing QR data:", err);
+    }
 
     return parsed;
   };
@@ -81,8 +95,6 @@ const ScanResultScreen = ({ navigation, route }) => {
     switch (precision) {
       case 1: // Continent level
         const continent = getContinentFromGeohash(geohash);
-        console.log(locationData);
-        console.log(locationData.country);
         return continent !== 'Unknown' ? continent : (locationData.country || 'Unknown Region');
       case 2: // Country level  
         return locationData.country || 'Unknown Country';
@@ -118,7 +130,7 @@ const ScanResultScreen = ({ navigation, route }) => {
           return;
         }
 
-        // Ensure same case as signing code (you said signing uppercases)
+        // Ensure same case as signing code (uppercase)
         const gh = where.trim().toUpperCase();
         
         // Get precision from geohash length
@@ -141,7 +153,7 @@ const ScanResultScreen = ({ navigation, route }) => {
           setPlace({
             displayText,
             precision,
-            rawData: locationData, // Keep raw data for debugging if needed
+            rawData: locationData,
             geohash: gh
           });
         } else {
