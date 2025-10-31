@@ -75,14 +75,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D8DBA2E62E453196000FD791 /* Exceptions for "TASBroadcastExtension" folder in "TASBroadcastExtension" target */ = {
+		D8DBA2E62E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = D8DBA2CC2E453195000FD791 /* TASBroadcastExtension */;
 		};
-		D8DBA2EA2E453196000FD791 /* Exceptions for "TASBroadcastExtensionSetupUI" folder in "TASBroadcastExtensionSetupUI" target */ = {
+		D8DBA2EA2E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -92,30 +92,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D8DBA2D02E453196000FD791 /* TASBroadcastExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D8DBA2E62E453196000FD791 /* Exceptions for "TASBroadcastExtension" folder in "TASBroadcastExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TASBroadcastExtension;
-			sourceTree = "<group>";
-		};
-		D8DBA2DC2E453196000FD791 /* TASBroadcastExtensionSetupUI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D8DBA2EA2E453196000FD791 /* Exceptions for "TASBroadcastExtensionSetupUI" folder in "TASBroadcastExtensionSetupUI" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = TASBroadcastExtensionSetupUI;
-			sourceTree = "<group>";
-		};
+		D8DBA2D02E453196000FD791 /* TASBroadcastExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D8DBA2E62E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TASBroadcastExtension; sourceTree = "<group>"; };
+		D8DBA2DC2E453196000FD791 /* TASBroadcastExtensionSetupUI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (D8DBA2EA2E453196000FD791 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = TASBroadcastExtensionSetupUI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -548,7 +526,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = tasprototype/tasprototype.entitlements;
+				CODE_SIGN_ENTITLEMENTS = tasprototype/tasprototype.Debug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -670,10 +648,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -729,10 +704,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -788,10 +760,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -931,7 +900,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtension/TASBroadcastExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = TASBroadcastExtension/TASBroadcastExtension.Debug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
