@@ -53,7 +53,19 @@ export default ({ config }) => {
         ],
         "expo-font",
         "expo-web-browser",
-        "./modules/screen-qr-module/plugin"
+        [
+          "expo-camera",
+          {
+            "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan QR codes and record video."
+          }
+        ],
+        "./modules/screen-qr-module/plugin",
+        [
+          "./plugins/with-broadcast-extension/withBroadcastExtension",
+          {
+            "appleTeamId": "BUP8ZP8X4V"
+          }
+        ]
       ],
       experiments: {
         typedRoutes: true

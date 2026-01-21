@@ -315,6 +315,30 @@ public class AddSignatureModule: Module {
         let qrSize = CGSize(width: shorterDimension * 0.1, height: shorterDimension * 0.1)
         print("QR size: \(qrSize)")
 
+        // Calculate safe zone positioning for vertical video content
+        let isVertical = videoSize.height > videoSize.width
+        
+        // Safe positioning that works for Instagram Stories/Reels and TikTok
+        let safeLeftMargin: CGFloat
+        let safeBottomMargin: CGFloat
+        
+        if isVertical {
+          // For vertical content (Stories/Reels/TikTok):
+          // - Keep away from left edge (avoid potential cropping)
+          // - Stay well above bottom interface elements
+          // - TikTok interface covers bottom 420px, Instagram covers bottom 150px
+          // - Use the more conservative TikTok spec
+          safeLeftMargin = videoSize.width * 0.05 // 5% from left edge
+          safeBottomMargin = videoSize.height * 0.25 // 25% from bottom (well above both platform interfaces)
+          print("Vertical video detected - using safe zone positioning")
+          print("Safe margins: left=\(safeLeftMargin), bottom=\(safeBottomMargin)")
+        } else {
+          // For horizontal/square content, use original positioning
+          safeLeftMargin = 20
+          safeBottomMargin = 20
+          print("Horizontal/square video - using standard positioning")
+        }
+
         print("Generating QR layers with signature fragments...")
         for i in 0..<actualFrames {
           let currentTime = startTime + i * interval
@@ -333,11 +357,16 @@ public class AddSignatureModule: Module {
               signer: privateKey
             )
             
+            // Position QR codes in "T" formation within safe zone
+            // Y coordinates: bottom QR at safeBottomMargin, top row above it
+            let bottomY = safeBottomMargin
+            let topY = safeBottomMargin + qrSize.height
+            
             // Create QR layers using the fragment-based messages
             let topLeft = try createQRLayer(
               from: fragments.timeQR,
               context: context,
-              position: CGPoint(x: 20, y: 20 + qrSize.height),
+              position: CGPoint(x: safeLeftMargin, y: topY),
               size: qrSize,
               darkColor: darkColorHex,
               lightColor: lightColorHex,
@@ -347,7 +376,7 @@ public class AddSignatureModule: Module {
             let topCenter = try createQRLayer(
               from: fragments.contentQR,
               context: context,
-              position: CGPoint(x: 20 + qrSize.width, y: 20 + qrSize.height),
+              position: CGPoint(x: safeLeftMargin + qrSize.width, y: topY),
               size: qrSize,
               darkColor: darkColorHex,
               lightColor: lightColorHex,
@@ -357,7 +386,7 @@ public class AddSignatureModule: Module {
             let topRight = try createQRLayer(
               from: fragments.locationQR,
               context: context,
-              position: CGPoint(x: 20 + 2 * qrSize.width, y: 20 + qrSize.height),
+              position: CGPoint(x: safeLeftMargin + 2 * qrSize.width, y: topY),
               size: qrSize,
               darkColor: darkColorHex,
               lightColor: lightColorHex,
@@ -367,7 +396,7 @@ public class AddSignatureModule: Module {
             let bottom = try createQRLayer(
               from: fragments.identityQR,
               context: context,
-              position: CGPoint(x: 20 + qrSize.width, y: 20),
+              position: CGPoint(x: safeLeftMargin + qrSize.width, y: bottomY),
               size: qrSize,
               darkColor: darkColorHex,
               lightColor: lightColorHex,

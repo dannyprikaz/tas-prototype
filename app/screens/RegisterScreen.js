@@ -24,10 +24,10 @@ const RegisterScreen = ({ navigation }) => {
       const userId = createUserId();
 
       // 2. Generate key pair (elliptic hex keys)
-      const { privateKeyHex } = await generatePrivateKey();
+      const { privateKey } = await generatePrivateKey();
 
-      // 3. Create CSR using userId + email + privateKeyHex
-      const csr = await createCSR(userId, email, privateKeyHex);
+      // 3. Create CSR using userId + email + privateKey
+      const csr = await createCSR(userId, email, privateKey);
 
       // 4. Submit CSR to backend
       const certData = await submitCSR(userId, csr, name);
@@ -38,7 +38,7 @@ const RegisterScreen = ({ navigation }) => {
       }
 
       // 5. Save private key hex to file named with cert_id
-      await savePrivateKey(certData.id, privateKeyHex);
+      await savePrivateKey(certData.id, privateKey);
 
       // 6. Copy cert ID to clipboard
       Clipboard.setString(certData.id);

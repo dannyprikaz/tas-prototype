@@ -16,8 +16,8 @@ async function ensureKeysDir() {
 export async function generatePrivateKey() {
   const keyPair = ec.genKeyPair();
   return {
-    privateKeyHex: keyPair.getPrivate('hex'),
-    publicKeyHex: keyPair.getPublic('hex'),
+    privateKey: keyPair.getPrivate('hex'),
+    publicKey: keyPair.getPublic('hex'),
   };
 }
 

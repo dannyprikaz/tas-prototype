@@ -383,14 +383,15 @@ const CreateScreen = ({ navigation }) => {
   const DummyQROverlay = () => {
     const { width: screenWidth } = Dimensions.get('window');
     const qrSize = screenWidth * 0.122
-    const padding = 9;
+    const leftPadding = 23;
+    const bottomPadding = 211;
 
     return (
       <View style={styles.dummyQRContainer} pointerEvents="none">
         {/* Time */}
         <View style={[styles.dummyQR, {
-          left: padding,
-          bottom: padding + qrSize,
+          left: leftPadding,
+          bottom: bottomPadding + qrSize,
           width: qrSize,
           height: qrSize,
         }]}>
@@ -399,8 +400,8 @@ const CreateScreen = ({ navigation }) => {
 
         {/* Content */}
         <View style={[styles.dummyQR, {
-          left: padding + qrSize,
-          bottom: padding + qrSize,
+          left: leftPadding + qrSize,
+          bottom: bottomPadding + qrSize,
           width: qrSize,
           height: qrSize,
         }]}>
@@ -409,8 +410,8 @@ const CreateScreen = ({ navigation }) => {
 
         {/* Location */}
         <View style={[styles.dummyQR, {
-          left: padding + 2 * qrSize,
-          bottom: padding + qrSize,
+          left: leftPadding + 2 * qrSize,
+          bottom: bottomPadding + qrSize,
           width: qrSize,
           height: qrSize,
         }]}>
@@ -419,8 +420,8 @@ const CreateScreen = ({ navigation }) => {
 
         {/* Identity */}
         <View style={[styles.dummyQR, {
-          left: padding + qrSize,
-          bottom: padding,
+          left: leftPadding + qrSize,
+          bottom: bottomPadding,
           width: qrSize,
           height: qrSize,
         }]}>
